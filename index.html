@@ -65,49 +65,36 @@
 <body>
     <h1>🎲 选择你想玩的桌游（可多选）</h1>
 
-    <!-- 直接提交，不跳转、不刷新、不重填 -->
-    <form id="gameForm">
-        <input type="text" id="userName" placeholder="请输入你的名字" class="name-input" required>
+    <form action="https://formspree.io/f/xvzwlrqe" method="POST">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://naifuwan.github.io/boardgame/">
+
+        <input type="text" name="姓名" placeholder="输入你的名字" class="name-input" required>
 
         <div class="game-grid">
             <div class="game-card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-1e7kZ1k-t3.jpg" alt="阿瓦隆">
-                <label><input type="checkbox" class="game" value="阿瓦隆"> 阿瓦隆</label>
+                <label><input type="checkbox" name="桌游" value="阿瓦隆"> 阿瓦隆</label>
             </div>
             <div class="game-card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-7zddZ1n-t3.jpg" alt="狼人杀">
-                <label><input type="checkbox" class="game" value="狼人杀"> 狼人杀</label>
+                <label><input type="checkbox" name="桌游" value="狼人杀"> 狼人杀</label>
             </div>
             <div class="game-card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-2c1bZ1l-t3.jpg" alt="三国杀">
-                <label><input type="checkbox" class="game" value="三国杀"> 三国杀</label>
+                <label><input type="checkbox" name="桌游" value="三国杀"> 三国杀</label>
             </div>
             <div class="game-card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-8x4bZ1m-t3.jpg" alt="璀璨宝石">
-                <label><input type="checkbox" class="game" value="璀璨宝石"> 璀璨宝石</label>
+                <label><input type="checkbox" name="桌游" value="璀璨宝石"> 璀璨宝石</label>
             </div>
             <div class="game-card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-6x6pZ1o-t3.jpg" alt="卡坦岛">
-                <label><input type="checkbox" class="game" value="卡坦岛"> 卡坦岛</label>
+                <label><input type="checkbox" name="桌游" value="卡坦岛"> 卡坦岛</label>
             </div>
         </div>
 
-        <button type="submit" class="submit-btn">提交选择</button>
+        <button class="submit-btn" type="submit">提交选择</button>
     </form>
-
-    <script>
-        // 真正提交到腾讯文档，不跳转！
-        const form = document.getElementById('gameForm');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const name = document.getElementById('userName').value;
-            const games = Array.from(document.querySelectorAll('.game:checked'))
-                .map(g => g.value).join('、');
-
-            alert(`提交成功！\n名字：${name}\n选择：${games}`);
-            form.reset();
-        });
-    </script>
 </body>
 </html>
