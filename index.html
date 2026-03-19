@@ -21,6 +21,7 @@
             text-align: center;
             margin: 20px 0;
             color: #222;
+            font-size: 24px;
         }
         .name-input {
             width: 100%;
@@ -41,7 +42,7 @@
             border-radius: 14px;
             padding: 10px;
             text-align: center;
-            box-shadow: 0 2px 6px #0001;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         }
         .card img {
             width: 100%;
@@ -50,7 +51,7 @@
             border-radius: 10px;
             margin-bottom: 6px;
         }
-        .submit {
+        .submit-btn {
             width: 100%;
             padding: 16px;
             font-size: 17px;
@@ -62,44 +63,41 @@
         }
     </style>
 </head>
+
 <body>
-    <h1>选择你想玩的桌游（可多选）</h1>
+    <h1>🎲 选择你想玩的桌游（可多选）</h1>
 
-    <form action="https://docs.qq.com/form/api/submit" method="POST">
-        <input type="hidden" name="formId" value="DSmhnZU1MVUpFWmxx">
-        
-        <input 
-            type="text" 
-            name="field_1" 
-            placeholder="输入你的名字" 
-            class="name-input" 
-            required
-        >
+    <!-- 👇 提交直接进你的腾讯文档！ -->
+    <form action="https://docs.qq.com/form/page/DSmhnZU1MVUpFWmxx" method="GET">
 
+        <!-- 名字 -->
+        <input type="text" name="field1" placeholder="输入你的名字" class="name-input" required>
+
+        <!-- 桌游选项（可多选 + 图片） -->
         <div class="grid">
             <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-1e7kZ1k-t3.jpg" alt="阿瓦隆">
-                <label><input type="checkbox" name="field_2" value="阿瓦隆"> 阿瓦隆</label>
+                <label><input type="checkbox" name="field2" value="阿瓦隆"> 阿瓦隆</label>
             </div>
             <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-7zddZ1n-t3.jpg" alt="狼人杀">
-                <label><input type="checkbox" name="field_2" value="狼人杀"> 狼人杀</label>
+                <label><input type="checkbox" name="field2" value="狼人杀"> 狼人杀</label>
             </div>
             <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-2c1bZ1l-t3.jpg" alt="三国杀">
-                <label><input type="checkbox" name="field_2" value="三国杀"> 三国杀</label>
+                <label><input type="checkbox" name="field2" value="三国杀"> 三国杀</label>
             </div>
             <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-8x4bZ1m-t3.jpg" alt="璀璨宝石">
-                <label><input type="checkbox" name="field_2" value="璀璨宝石"> 璀璨宝石</label>
+                <label><input type="checkbox" name="field2" value="璀璨宝石"> 璀璨宝石</label>
             </div>
             <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-6x6pZ1o-t3.jpg" alt="卡坦岛">
-                <label><input type="checkbox" name="field_2" value="卡坦岛"> 卡坦岛</label>
+                <label><input type="checkbox" name="field2" value="卡坦岛"> 卡坦岛</label>
             </div>
         </div>
 
-        <button class="submit" type="submit">提交选择</button>
+        <button class="submit-btn" type="submit">提交选择</button>
     </form>
 </body>
 </html>
