@@ -15,6 +15,52 @@
             background-color: #f5f7fa;
             padding: 20px;
         }
+        .header {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            text-align: center;
+        }
+        h1 {
+            color: #212529;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .btn-send {
+            padding: 10px 24px;
+            background: #409eff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .btn-send:hover {
+            background: #3388e0;
+        }
+        .slider-container {
+            width: 90%;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .slider-label {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        #playerCount {
+            width: 100%;
+            accent-color: #409eff;
+            height: 6px;
+            cursor: pointer;
+        }
+        #playerValue {
+            font-size: 20px;
+            font-weight: bold;
+            color: #409eff;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -28,6 +74,10 @@
             overflow: hidden;
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+        }
+        .game-card.hide {
+            display: none;
         }
         .game-card:hover {
             transform: translateY(-4px);
@@ -58,9 +108,6 @@
             color: #495057;
             line-height: 1.5;
         }
-        .info-item strong {
-            color: #212529;
-        }
         .card-desc {
             padding: 0 16px 16px;
             font-size: 14px;
@@ -69,492 +116,540 @@
             border-top: 1px solid #f1f3f5;
             padding-top: 12px;
         }
-        h1 {
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
             text-align: center;
-            color: #212529;
-            margin-bottom: 30px;
-            font-size: 28px;
+        }
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 12px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .modal-content textarea {
+            height: 120px;
+            resize: none;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .modal-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-cancel {
+            background: #eee;
         }
     </style>
 </head>
 <body>
+
+<div class="header">
     <h1>🎲 我的桌游收藏库</h1>
-    <div class="container">
-        <!-- 典藏宝石 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="splendor.jpg" alt="典藏宝石" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–4人</div>
-                    <div class="info-item">资源管理 + 卡牌构筑 + 声望积累</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                收集宝石兑换发展卡，吸引贵族获取声望，率先达15点获胜
-            </div>
-        </div>
+    <button class="btn-send" id="sendEmailBtn">发送当前列表到邮箱</button>
 
-        <!-- 大搜查! -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="unlock.jpg" alt="大搜查!" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">1–6人（最佳2–4人）</div>
-                    <div class="info-item">合作解谜 + 卡牌数字组合 + App联动</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                翻找卡牌获取线索，用物品卡数字相加解锁新内容，在App计时内逃出密室
-            </div>
+    <div class="slider-container">
+        <div class="slider-label">
+            当前人数：<span id="playerValue">2</span> 人
         </div>
-
-        <!-- 失落的遗迹：阿纳克 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="arnak.jpg" alt="失落的遗迹：阿纳克" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">1–4人</div>
-                    <div class="info-item">卡牌构筑（DBG）+ 工人放置 + 资源管理</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                派遣工人探索遗迹、购买卡牌构筑牌库，优化资源循环，在5轮后获得最高分数
-            </div>
-        </div>
-
-        <!-- 小黑屋（第三版） -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="betrayal.jpg" alt="小黑屋（第三版）" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">3–6人</div>
-                    <div class="info-item">半合作探索 + 随机剧本 + 阵营对抗</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家共同探索鬼屋，触发“预兆”后随机一人叛变成为叛徒，双方按专属剧本对抗至一方胜利
-            </div>
-        </div>
-
-        <!-- 七大奇迹：对决 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="7wonders-duel.jpg" alt="七大奇迹：对决" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2人</div>
-                    <div class="info-item">文明发展 + 卡牌构筑 + 军事/科技/胜利点三条胜利路径</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                两人轮流选取卡牌发展文明，通过军事压制、科技垄断或积累胜利点，率先达成任一胜利条件即可获胜
-            </div>
-        </div>
-
-        <!-- 七大奇迹 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="7wonders.jpg" alt="七大奇迹" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–7人</div>
-                    <div class="info-item">文明发展 + 卡牌构筑 + 区域竞争</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家代表不同古文明，通过收集卡牌建造奇迹、发展科技与军事，最终比拼分数
-            </div>
-        </div>
-
-        <!-- 血与刃的白蔷薇 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="white-rose.jpg" alt="血与刃的白蔷薇" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">5–10人</div>
-                    <div class="info-item">隐藏身份 + 阵营推理 + 资源管理</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家分为两大阵营隐藏身份，通过出牌博弈，白蔷薇需完成献祭，血刃则要刺杀或破坏流程
-            </div>
-        </div>
-
-        <!-- 骗子酒吧 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="liars-bar.jpg" alt="骗子酒吧" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">3–8人</div>
-                    <div class="info-item">吹牛欺诈 + 手牌管理 + 轮次下注</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家轮流出牌并谎报牌型，其他人可选择质疑，成功欺诈或揭穿谎言可积累筹码，最终筹码最多者获胜
-            </div>
-        </div>
-
-        <!-- 诡镇奇谈：饥渴深渊 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="arkham-rpg.jpg" alt="诡镇奇谈：饥渴深渊" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–6人（含1名主持人/KP）</div>
-                    <div class="info-item">克苏鲁主题TRPG跑团 + 角色扮演 + 剧情探索</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                1人担任主持人（KP），其他玩家扮演调查员，在1920年代的阿卡姆镇探索超自然谜团，通过掷骰检定推进剧情，对抗不可名状的恐怖存在
-            </div>
-        </div>
-
-        <!-- 诡镇奇谈：卡牌版 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="arkham-lcg.jpg" alt="诡镇奇谈：卡牌版" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">1–4人</div>
-                    <div class="info-item">克苏鲁主题合作卡牌构筑 + 剧情冒险</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家扮演调查员构筑专属牌组，在洛夫克拉夫特式的恐怖剧本中调查事件、对抗古神势力，通过卡牌效果与资源管理推进剧情，最终完成调查或避免被疯狂吞噬。扩展备注：包含第2、4、6、9、10个扩展，以及《外神之战》《深渊守卫》两个独立POD
-            </div>
-        </div>
-
-        <!-- 炸弹猫咪 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="bomb-kittens.jpg" alt="炸弹猫咪" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–5人</div>
-                    <div class="info-item">欢乐手牌管理 + 风险规避</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家轮流出牌，抽到炸弹猫咪时需用解除牌化解，最后存活的玩家获胜
-            </div>
-        </div>
-
-        <!-- 翻苏丹 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="sultans.jpg" alt="翻苏丹" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">5–15人</div>
-                    <div class="info-item">阵营对抗 + 身份推理 + 社交博弈</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家分为苏丹阵营与刺客阵营，隐藏身份后通过话术与行动互相试探，最终完成刺杀或保护苏丹的一方获胜
-            </div>
-        </div>
-
-        <!-- 幽港迷城：纽扣&虫子 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="gloomhaven-buttons.jpg" alt="幽港迷城：纽扣&虫子" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">1–2人</div>
-                    <div class="info-item">微型版幽港迷城 + 战术战斗 + 角色成长</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                简化版的幽港迷城，玩家扮演冒险者在微型棋盘上进行战术战斗，完成任务、升级角色，体验原作的核心冒险乐趣
-            </div>
-        </div>
-
-        <!-- 茂林源记 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="root.jpg" alt="茂林源记" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–4人</div>
-                    <div class="info-item">不对称阵营对抗 + 区域控制 + 资源管理</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家扮演森林中不同阵营（猫咪、飞鸟、森林联盟等），各有独特机制与胜利条件，通过扩张、战斗、外交等方式争夺森林控制权，率先达成胜利目标者获胜
-            </div>
-        </div>
-
-        <!-- 幽港迷城：雄狮之颚 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="gloomhaven-jaws.jpg" alt="幽港迷城：雄狮之颚" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">1–4人</div>
-                    <div class="info-item">战术战斗 + 角色成长 + 剧情驱动</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                幽港迷城独立前传，玩家组成雇佣兵小队，在章节式剧情中完成任务、升级技能与装备，逐步揭开城市背后的阴谋
-            </div>
-        </div>
-
-        <!-- 王权骰铸 重掷版 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="dice-throne.jpg" alt="王权骰铸 重掷版" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–10人</div>
-                    <div class="info-item">骰子驱动对战 + 角色构筑 + 快节奏对抗</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家选择独特英雄角色，通过掷骰释放技能、构筑卡组，与其他玩家进行对战。备注：每次对战只能进行1v1对决
-            </div>
-        </div>
-
-        <!-- 拼布艺术：圣诞版 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="patchwork-xmas.jpg" alt="拼布艺术：圣诞版" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2人</div>
-                    <div class="info-item">拼布策略 + 资源管理 + 时间规划</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                两位玩家轮流收集布片拼接 quilt，兼顾覆盖面积与纽扣收益，最终得分更高者获胜
-            </div>
-        </div>
-
-        <!-- 驴桥 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="donkey-bridge.jpg" alt="驴桥" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–6人</div>
-                    <div class="info-item">手牌管理 + 出牌策略 + 点数博弈</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家轮流出牌争夺桥点，通过合理规划手牌与点数，尽可能多地占据有利桥位，最终获得最高点数者获胜
-            </div>
-        </div>
-
-        <!-- 瘟疫危机：传承 第一季 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="pandemic-legacy.jpg" alt="瘟疫危机：传承 第一季" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–4人</div>
-                    <div class="info-item">合作抗疫 + 传承机制 + 剧情驱动</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家扮演不同职业的疾控人员，在全球范围内合作阻止瘟疫扩散，随着游戏进程永久改变游戏组件，逐步揭开瘟疫背后的阴谋
-            </div>
-        </div>
-
-        <!-- 柯尔特快车（大盒版） -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="colt-express.jpg" alt="柯尔特快车（大盒版）" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–8人</div>
-                    <div class="info-item">西部题材 + 手牌规划 + 火车抢劫</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家扮演西部劫匪，通过出牌规划行动顺序，在行驶的火车上争夺财宝，最终获得最多财富者获胜
-            </div>
-        </div>
-
-        <!-- 热力追缉 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="heat.jpg" alt="热力追缉" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">1–6人</div>
-                    <div class="info-item">赛车题材 + 手牌管理 + 赛道竞速</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家扮演赛车手，通过管理手牌与热量，在复古赛道上竞速比拼，率先冲过终点线者获胜
-            </div>
-        </div>
-
-        <!-- 时空神探：巴黎1920 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="kronologic.jpg" alt="时空神探：巴黎1920" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">1–4人</div>
-                    <div class="info-item">时间推理 + 合作解谜 + 案件还原</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家扮演时空侦探，在1920年代的巴黎通过时间线推理，还原案件真相，找出真凶
-            </div>
-        </div>
-
-        <!-- 阿瓦隆：亚瑟传说 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="avalon-quest.jpg" alt="阿瓦隆：亚瑟传说" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">4–10人</div>
-                    <div class="info-item">亚瑟王题材 + 阵营对抗 + 任务冒险</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家扮演亚瑟王的骑士，分为忠诚与反叛阵营，通过完成任务、互相猜忌，最终决定王国的命运
-            </div>
-        </div>
-
-        <!-- UNO -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="uno.jpg" alt="UNO" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–10人</div>
-                    <div class="info-item">手牌管理 + 颜色/数字匹配 + 欢乐互动</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家轮流出牌匹配颜色或数字，优先出完手牌者获胜，功能牌可带来反转、跳过、变色等趣味互动
-            </div>
-        </div>
-
-        <!-- 柏德之门：背叛 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="betrayal-baldurs-gate.jpg" alt="柏德之门：背叛" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">3–6人</div>
-                    <div class="info-item">冒险探索 + 阵营背叛 + 剧本变化</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家在柏德之门探索，中途触发背叛剧本，部分玩家变为叛徒，最终完成各自目标决出胜负
-            </div>
-        </div>
-
-        <!-- 勃根地城堡 豪华版 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="castles-of-burgundy.jpg" alt="勃根地城堡 豪华版" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–4人</div>
-                    <div class="info-item">德式策略 + 区域控制 + 资源规划</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家通过掷骰选择行动，在自己的棋盘上扩张领地、收集资源，获取最高分数
-            </div>
-        </div>
-
-        <!-- 狼人杀 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="werewolf.jpg" alt="狼人杀" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">6–18人</div>
-                    <div class="info-item">身份推理 + 语言辩论 + 阵营对抗</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家分为狼人、平民与神职阵营，通过夜间刀人、白天发言投票放逐狼人，最终决出阵营胜负
-            </div>
-        </div>
-
-        <!-- 孤胆谢尔曼 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="lone-sherman.jpg" alt="孤胆谢尔曼" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">1人</div>
-                    <div class="info-item">单人战棋 + 战术推演 + 二战题材</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                单人操控谢尔曼坦克，在二战战场完成战术任务，对抗敌军
-            </div>
-        </div>
-
-        <!-- 抵抗！（单人版） -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="resistance-solo.jpg" alt="抵抗！（单人版）" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">1人</div>
-                    <div class="info-item">单人叙事 + 二战题材 + 剧情选择</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                单人扮演法国抵抗军成员，在二战背景下通过剧情选择完成抵抗任务，体验抵抗军的故事
-            </div>
-        </div>
-
-        <!-- 不屈战场：诺曼底 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="undaunted-normandy.jpg" alt="不屈战场：诺曼底" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2人</div>
-                    <div class="info-item">二战战棋 + 卡牌驱动 + 战术对抗</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                两人分别扮演盟军与德军，在诺曼底战场通过卡牌调度部队，争夺关键点位
-            </div>
-        </div>
-
-        <!-- 恶夜杀机 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="terrorscape.jpg" alt="恶夜杀机" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">1–4人</div>
-                    <div class="info-item">恐怖生存 + 不对称对抗 + 场景探索</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家分为逃生者与屠夫，逃生者需修复设施逃离，屠夫则要追捕并淘汰逃生者
-            </div>
-        </div>
-
-        <!-- 卡卡颂 大盒版 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="carcassonne-bigbox.jpg" alt="卡卡颂 大盒版" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–5人</div>
-                    <div class="info-item">区域控制 + 拼图放置 + 得分竞争</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家轮流放置地形板块，派遣随从占领道路、城堡、修道院等区域，最终获得最高分数者获胜
-            </div>
-        </div>
-
-        <!-- Flip 7 -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="flip7.jpg" alt="Flip 7" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">3–18人</div>
-                    <div class="info-item">手牌管理 + 压分博弈 + 分数竞速</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家通过翻牌积累分数，可选择“见好就收”或“继续冒险”，率先达到200分者获胜
-            </div>
-        </div>
-
-        <!-- Tacta -->
-        <div class="game-card">
-            <div class="card-header">
-                <img src="tacta.jpg" alt="Tacta" class="game-img">
-                <div class="game-info">
-                    <div class="info-item">2–8人</div>
-                    <div class="info-item">抽象策略 + 板块拼接 + 区域控制</div>
-                </div>
-            </div>
-            <div class="card-desc">
-                玩家通过放置彩色板块，连接、覆盖并占领棋盘区域，最终以控制面积和点位得分决出胜负
-            </div>
-        </div>
+        <input type="range" id="playerCount" min="1" max="18" value="2">
     </div>
+</div>
+
+<div class="container" id="gameContainer">
+    <!-- 典藏宝石 -->
+    <div class="game-card" data-min="2" data-max="4">
+        <div class="card-header">
+            <img src="splendor.jpg" alt="典藏宝石" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–4人</div>
+                <div class="info-item">资源管理 + 卡牌构筑 + 声望积累</div>
+            </div>
+        </div>
+        <div class="card-desc">收集宝石兑换发展卡，吸引贵族获取声望，率先达15点获胜</div>
+    </div>
+
+    <!-- 大搜查! -->
+    <div class="game-card" data-min="1" data-max="6">
+        <div class="card-header">
+            <img src="unlock.jpg" alt="大搜查!" class="game-img">
+            <div class="game-info">
+                <div class="info-item">1–6人（最佳2–4人）</div>
+                <div class="info-item">合作解谜 + 卡牌数字组合 + App联动</div>
+            </div>
+        </div>
+        <div class="card-desc">翻找卡牌获取线索，用物品卡数字相加解锁新内容，在App计时内逃出密室</div>
+    </div>
+
+    <!-- 失落的遗迹：阿纳克 -->
+    <div class="game-card" data-min="1" data-max="4">
+        <div class="card-header">
+            <img src="arnak.jpg" alt="失落的遗迹：阿纳克" class="game-img">
+            <div class="game-info">
+                <div class="info-item">1–4人</div>
+                <div class="info-item">卡牌构筑+工人放置+资源管理</div>
+            </div>
+        </div>
+        <div class="card-desc">派遣工人探索遗迹、购买卡牌构筑牌库，优化资源循环，5轮后最高分获胜</div>
+    </div>
+
+    <!-- 小黑屋 -->
+    <div class="game-card" data-min="3" data-max="6">
+        <div class="card-header">
+            <img src="betrayal.jpg" alt="小黑屋" class="game-img">
+            <div class="game-info">
+                <div class="info-item">3–6人</div>
+                <div class="info-item">半合作探索 + 随机剧本 + 阵营对抗</div>
+            </div>
+        </div>
+        <div class="card-desc">共同探索鬼屋，触发预兆后一人叛变，双方按剧本对抗至胜利</div>
+    </div>
+
+    <!-- 七大奇迹：对决 -->
+    <div class="game-card" data-min="2" data-max="2">
+        <div class="card-header">
+            <img src="7wonders-duel.jpg" alt="七大奇迹：对决" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2人</div>
+                <div class="info-item">文明发展+卡牌构筑+三路线胜利</div>
+            </div>
+        </div>
+        <div class="card-desc">两人轮流选卡发展，军事压制、科技垄断或胜利点任一条件先达成就赢</div>
+    </div>
+
+    <!-- 七大奇迹 -->
+    <div class="game-card" data-min="2" data-max="7">
+        <div class="card-header">
+            <img src="7wonders.jpg" alt="七大奇迹" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–7人</div>
+                <div class="info-item">文明发展 + 卡牌构筑 + 区域竞争</div>
+            </div>
+        </div>
+        <div class="card-desc">代表古文明，收集卡牌建奇迹、发展科技军事，最后比分数</div>
+    </div>
+
+    <!-- 血与刃的白蔷薇 -->
+    <div class="game-card" data-min="5" data-max="10">
+        <div class="card-header">
+            <img src="white-rose.jpg" alt="血与刃的白蔷薇" class="game-img">
+            <div class="game-info">
+                <div class="info-item">5–10人</div>
+                <div class="info-item">隐藏身份 + 阵营推理 + 资源管理</div>
+            </div>
+        </div>
+        <div class="card-desc">两大阵营隐藏身份，白蔷薇要献祭，血刃要破坏或刺杀</div>
+    </div>
+
+    <!-- 骗子酒吧 -->
+    <div class="game-card" data-min="3" data-max="8">
+        <div class="card-header">
+            <img src="liars-bar.jpg" alt="骗子酒吧" class="game-img">
+            <div class="game-info">
+                <div class="info-item">3–8人</div>
+                <div class="info-item">吹牛欺诈 + 手牌管理 + 轮次下注</div>
+            </div>
+        </div>
+        <div class="card-desc">轮流出牌并谎报牌型，质疑成功或欺诈成功都能赚筹码</div>
+    </div>
+
+    <!-- 诡镇奇谈：饥渴深渊 -->
+    <div class="game-card" data-min="2" data-max="6">
+        <div class="card-header">
+            <img src="arkham-rpg.jpg" alt="诡镇奇谈：饥渴深渊" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–6人(含KP)</div>
+                <div class="info-item">克苏鲁TRPG + 角色扮演 + 剧情探索</div>
+            </div>
+        </div>
+        <div class="card-desc">一人当KP，其他人扮演调查员，探索谜团、掷骰检定、对抗恐怖</div>
+    </div>
+
+    <!-- 诡镇奇谈：卡牌版 -->
+    <div class="game-card" data-min="1" data-max="4">
+        <div class="card-header">
+            <img src="arkham-lcg.jpg" alt="诡镇奇谈：卡牌版" class="game-img">
+            <div class="game-info">
+                <div class="info-item">1–4人</div>
+                <div class="info-item">克苏鲁合作卡牌 + 剧情冒险</div>
+            </div>
+        </div>
+        <div class="card-desc">构筑牌组调查事件、对抗古神，完成调查或不被疯狂吞噬</div>
+    </div>
+
+    <!-- 炸弹猫咪 -->
+    <div class="game-card" data-min="2" data-max="5">
+        <div class="card-header">
+            <img src="bomb-kittens.jpg" alt="炸弹猫咪" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–5人</div>
+                <div class="info-item">欢乐手牌 + 风险规避</div>
+            </div>
+        </div>
+        <div class="card-desc">轮流出牌，抽到炸弹用解除卡化解，最后存活者赢</div>
+    </div>
+
+    <!-- 翻苏丹 -->
+    <div class="game-card" data-min="5" data-max="15">
+        <div class="card-header">
+            <img src="sultans.jpg" alt="翻苏丹" class="game-img">
+            <div class="game-info">
+                <div class="info-item">5–15人</div>
+                <div class="info-item">阵营对抗 + 身份推理 + 社交博弈</div>
+            </div>
+        </div>
+        <div class="card-desc">苏丹阵营 vs 刺客阵营，隐藏身份互相试探，完成刺杀或保护</div>
+    </div>
+
+    <!-- 幽港迷城：纽扣&虫子 -->
+    <div class="game-card" data-min="1" data-max="2">
+        <div class="card-header">
+            <img src="gloomhaven-buttons.jpg" alt="幽港迷城：纽扣&虫子" class="game-img">
+            <div class="game-info">
+                <div class="info-item">1–2人</div>
+                <div class="info-item">微型幽港 + 战术战斗 + 角色成长</div>
+            </div>
+        </div>
+        <div class="card-desc">简化版幽港迷城，战术战斗、完成任务、升级角色</div>
+    </div>
+
+    <!-- 茂林源记 -->
+    <div class="game-card" data-min="2" data-max="4">
+        <div class="card-header">
+            <img src="root.jpg" alt="茂林源记" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–4人</div>
+                <div class="info-item">不对称对抗 + 区域控制 + 资源管理</div>
+            </div>
+        </div>
+        <div class="card-desc">扮演森林不同阵营，用独特机制争夺森林控制权</div>
+    </div>
+
+    <!-- 幽港迷城：雄狮之颚 -->
+    <div class="game-card" data-min="1" data-max="4">
+        <div class="card-header">
+            <img src="gloomhaven-jaws.jpg" alt="幽港迷城：雄狮之颚" class="game-img">
+            <div class="game-info">
+                <div class="info-item">1–4人</div>
+                <div class="info-item">战术战斗 + 角色成长 + 剧情驱动</div>
+            </div>
+        </div>
+        <div class="card-desc">组成雇佣兵小队，剧情任务、升级技能装备，揭开阴谋</div>
+    </div>
+
+    <!-- 王权骰铸 -->
+    <div class="game-card" data-min="2" data-max="10">
+        <div class="card-header">
+            <img src="dice-throne.jpg" alt="王权骰铸" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–10人(1v1)</div>
+                <div class="info-item">骰子对战 + 角色构筑 + 快节奏对抗</div>
+            </div>
+        </div>
+        <div class="card-desc">选英雄掷骰放技能，每次只能1v1对决</div>
+    </div>
+
+    <!-- 拼布艺术：圣诞版 -->
+    <div class="game-card" data-min="2" data-max="2">
+        <div class="card-header">
+            <img src="patchwork-xmas.jpg" alt="拼布艺术：圣诞版" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2人</div>
+                <div class="info-item">拼布策略 + 资源管理 + 时间规划</div>
+            </div>
+        </div>
+        <div class="card-desc">轮流收集布片拼被子，兼顾面积与纽扣，得分高赢</div>
+    </div>
+
+    <!-- 驴桥 -->
+    <div class="game-card" data-min="2" data-max="6">
+        <div class="card-header">
+            <img src="donkey-bridge.jpg" alt="驴桥" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–6人</div>
+                <div class="info-item">手牌管理 + 出牌策略 + 点数博弈</div>
+            </div>
+        </div>
+        <div class="card-desc">轮流出牌抢桥点，占住有利位置拿最高点数</div>
+    </div>
+
+    <!-- 瘟疫危机：传承 -->
+    <div class="game-card" data-min="2" data-max="4">
+        <div class="card-header">
+            <img src="pandemic-legacy.jpg" alt="瘟疫危机：传承" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–4人</div>
+                <div class="info-item">合作抗疫 + 传承机制 + 剧情驱动</div>
+            </div>
+        </div>
+        <div class="card-desc">全球合作阻止瘟疫，游戏进程会永久改变组件</div>
+    </div>
+
+    <!-- 柯尔特快车 -->
+    <div class="game-card" data-min="2" data-max="8">
+        <div class="card-header">
+            <img src="colt-express.jpg" alt="柯尔特快车" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–8人</div>
+                <div class="info-item">西部题材 + 手牌规划 + 火车抢劫</div>
+            </div>
+        </div>
+        <div class="card-desc">扮演劫匪规划出牌，在火车上抢财宝，财富最多赢</div>
+    </div>
+
+    <!-- 热力追缉 -->
+    <div class="game-card" data-min="1" data-max="6">
+        <div class="card-header">
+            <img src="heat.jpg" alt="热力追缉" class="game-img">
+            <div class="game-info">
+                <div class="info-item">1–6人</div>
+                <div class="info-item">赛车题材 + 手牌管理 + 赛道竞速</div>
+            </div>
+        </div>
+        <div class="card-desc">管理手牌与热量，在复古赛道竞速，先到终点赢</div>
+    </div>
+
+    <!-- 时空神探：巴黎1920 -->
+    <div class="game-card" data-min="1" data-max="4">
+        <div class="card-header">
+            <img src="kronologic.jpg" alt="时空神探" class="game-img">
+            <div class="game-info">
+                <div class="info-item">1–4人</div>
+                <div class="info-item">时间推理 + 合作解谜 + 案件还原</div>
+            </div>
+        </div>
+        <div class="card-desc">时空侦探在巴黎通过时间线推理，还原案件找真凶</div>
+    </div>
+
+    <!-- 阿瓦隆：亚瑟传说 -->
+    <div class="game-card" data-min="4" data-max="10">
+        <div class="card-header">
+            <img src="avalon-quest.jpg" alt="阿瓦隆：亚瑟传说" class="game-img">
+            <div class="game-info">
+                <div class="info-item">4–10人</div>
+                <div class="info-item">亚瑟王题材 + 阵营对抗 + 任务冒险</div>
+            </div>
+        </div>
+        <div class="card-desc">骑士分忠诚与反叛，完成任务、猜忌对抗决定王国命运</div>
+    </div>
+
+    <!-- UNO -->
+    <div class="game-card" data-min="2" data-max="10">
+        <div class="card-header">
+            <img src="uno.jpg" alt="UNO" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–10人</div>
+                <div class="info-item">手牌匹配 + 颜色数字 + 欢乐互动</div>
+            </div>
+        </div>
+        <div class="card-desc">出牌匹配颜色/数字，优先出完赢，功能牌带来反转跳过变色</div>
+    </div>
+
+    <!-- 柏德之门：背叛 -->
+    <div class="game-card" data-min="3" data-max="6">
+        <div class="card-header">
+            <img src="betrayal-baldurs-gate.jpg" alt="柏德之门：背叛" class="game-img">
+            <div class="game-info">
+                <div class="info-item">3–6人</div>
+                <div class="info-item">冒险探索 + 阵营背叛 + 剧本变化</div>
+            </div>
+        </div>
+        <div class="card-desc">探索柏德之门，触发背叛剧本，部分人变叛徒，完成目标赢</div>
+    </div>
+
+    <!-- 勃根地城堡 -->
+    <div class="game-card" data-min="2" data-max="4">
+        <div class="card-header">
+            <img src="castles-of-burgundy.jpg" alt="勃根地城堡" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–4人</div>
+                <div class="info-item">德式策略 + 区域控制 + 资源规划</div>
+            </div>
+        </div>
+        <div class="card-desc">掷骰选择行动，扩张领地收集资源，拿最高分</div>
+    </div>
+
+    <!-- 狼人杀 -->
+    <div class="game-card" data-min="6" data-max="18">
+        <div class="card-header">
+            <img src="werewolf.jpg" alt="狼人杀" class="game-img">
+            <div class="game-info">
+                <div class="info-item">6–18人</div>
+                <div class="info-item">身份推理 + 语言辩论 + 阵营对抗</div>
+            </div>
+        </div>
+        <div class="card-desc">狼人、平民、神职，夜间刀人，白天投票放逐，阵营对决</div>
+    </div>
+
+    <!-- 孤胆谢尔曼 -->
+    <div class="game-card" data-min="1" data-max="1">
+        <div class="card-header">
+            <img src="lone-sherman.jpg" alt="孤胆谢尔曼" class="game-img">
+            <div class="game-info">
+                <div class="info-item">1人</div>
+                <div class="info-item">单人战棋 + 战术推演 + 二战题材</div>
+            </div>
+        </div>
+        <div class="card-desc">单人操控谢尔曼坦克，完成二战战场战术任务</div>
+    </div>
+
+    <!-- 抵抗！单人版 -->
+    <div class="game-card" data-min="1" data-max="1">
+        <div class="card-header">
+            <img src="resistance-solo.jpg" alt="抵抗！" class="game-img">
+            <div class="game-info">
+                <div class="info-item">1人</div>
+                <div class="info-item">单人叙事 + 二战法国抵抗军 + 剧情选择</div>
+            </div>
+        </div>
+        <div class="card-desc">扮演法国抵抗军，通过剧情选择完成任务，体验抵抗故事</div>
+    </div>
+
+    <!-- 不屈战场：诺曼底 -->
+    <div class="game-card" data-min="2" data-max="2">
+        <div class="card-header">
+            <img src="undaunted-normandy.jpg" alt="不屈战场：诺曼底" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2人</div>
+                <div class="info-item">二战战棋 + 卡牌驱动 + 战术对抗</div>
+            </div>
+        </div>
+        <div class="card-desc">两人分饰盟军/德军，用卡牌调度部队，争夺关键点位</div>
+    </div>
+
+    <!-- 恶夜杀机 -->
+    <div class="game-card" data-min="1" data-max="4">
+        <div class="card-header">
+            <img src="terrorscape.jpg" alt="恶夜杀机" class="game-img">
+            <div class="game-info">
+                <div class="info-item">1–4人</div>
+                <div class="info-item">恐怖生存 + 不对称对抗 + 场景探索</div>
+            </div>
+        </div>
+        <div class="card-desc">逃生者修设备逃离，屠夫追捕淘汰，不对称对抗</div>
+    </div>
+
+    <!-- 卡卡颂 大盒版 -->
+    <div class="game-card" data-min="2" data-max="5">
+        <div class="card-header">
+            <img src="carcassonne-bigbox.jpg" alt="卡卡颂" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–5人</div>
+                <div class="info-item">区域控制 + 拼图放置 + 得分竞争</div>
+            </div>
+        </div>
+        <div class="card-desc">放地形板块，派随从占道路城堡修道院，拿最高分</div>
+    </div>
+
+    <!-- Flip 7 -->
+    <div class="game-card" data-min="3" data-max="18">
+        <div class="card-header">
+            <img src="flip7.jpg" alt="Flip7" class="game-img">
+            <div class="game-info">
+                <div class="info-item">3–18人</div>
+                <div class="info-item">手牌管理 + 压分博弈 + 分数竞速</div>
+            </div>
+        </div>
+        <div class="card-desc">翻牌积累分数，可收手可冒险，先到200分赢</div>
+    </div>
+
+    <!-- Tacta -->
+    <div class="game-card" data-min="2" data-max="8">
+        <div class="card-header">
+            <img src="tacta.jpg" alt="Tacta" class="game-img">
+            <div class="game-info">
+                <div class="info-item">2–8人</div>
+                <div class="info-item">抽象策略 + 板块拼接 + 区域控制</div>
+            </div>
+        </div>
+        <div class="card-desc">放置彩色板块连接覆盖占领区域，按面积与点位得分</div>
+    </div>
+</div>
+
+<!-- 邮箱发送弹窗（集成 Formspree） -->
+<div class="modal" id="emailModal">
+    <div class="modal-content">
+        <h3>发送适合的桌游列表</h3>
+        <form action="https://formspree.io/f/xvzwlrqe" method="POST" id="emailForm">
+            <label style="text-align:left;display:block;margin-top:10px;">你的邮箱：</label>
+            <input type="email" name="email" required placeholder="请输入接收邮箱">
+            
+            <label style="text-align:left;display:block;margin-top:10px;">桌游列表：</label>
+            <textarea name="message" id="emailMessage" readonly></textarea>
+            
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn btn-cancel" id="cancelBtn">取消</button>
+                <button type="submit" class="modal-btn btn-confirm" style="background:#409eff;color:white;">发送</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 人数筛选
+    const slider = document.getElementById('playerCount');
+    const valueDisplay = document.getElementById('playerValue');
+    const cards = document.querySelectorAll('.game-card');
+
+    slider.addEventListener('input', function() {
+        const count = parseInt(this.value);
+        valueDisplay.textContent = count;
+        cards.forEach(card => {
+            const min = parseInt(card.dataset.min);
+            const max = parseInt(card.dataset.max);
+            count >= min && count <= max ? card.classList.remove('hide') : card.classList.add('hide');
+        });
+    });
+
+    // 打开弹窗，自动生成桌游列表
+    const sendEmailBtn = document.getElementById('sendEmailBtn');
+    const emailModal = document.getElementById('emailModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const emailMessage = document.getElementById('emailMessage');
+
+    sendEmailBtn.addEventListener('click', () => {
+        // 生成列表
+        let text = "适合当前人数的桌游列表：\n\n";
+        document.querySelectorAll('.game-card:not(.hide)').forEach(c => {
+            const name = c.querySelector('.game-img').alt;
+            const p = c.querySelector('.info-item').textContent;
+            const core = c.querySelectorAll('.info-item')[1].textContent;
+            const desc = c.querySelector('.card-desc').textContent;
+            text += `🎲 ${name}（${p}）\n${core}\n${desc}\n\n`;
+        });
+        emailMessage.value = text;
+        emailModal.classList.add('show');
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        emailModal.classList.remove('show');
+    });
+</script>
 </body>
 </html>
