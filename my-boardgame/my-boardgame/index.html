@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>桌游选择器</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f2f3f5;
+    padding: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+    color: #333;
+  }
+  .title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .desc {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .name-input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    margin-bottom: 16px;
+    outline: none;
+  }
+  .name-input:focus {
+    border-color: #4285f4;
+  }
+  .game-card {
+    background: white;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .game-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #eee;
+  }
+  .game-info {
+    flex: 1;
+  }
+  .game-name {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .game-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+  }
+  .game-check {
+    transform: scale(1.3);
+    margin-right: 4px;
+  }
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    background: #4285f4;
+    color: white;
+    font-size: 17px;
+    font-weight: 500;
+    border: none;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  .submit-btn:active {
+    background: #3367d6;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="title">桌游选择工具</div>
+<div class="desc">选择你想玩的桌游，提交后我就能看到啦</div>
+
+<input type="text" class="name-input" id="username" placeholder="请填写你的名字">
+
+<!-- 桌游列表 -->
+<div class="game-card">
+  <img class="game-img" src="images/狼人杀.jpg">
+  <div class="game-info">
+    <div class="game-name">狼人杀</div>
+    <div class="game-desc">多人社交推理，经典嘴炮游戏，适合聚会热闹氛围</div>
+  </div>
+  <input type="checkbox" class="game-check" value="狼人杀">
+</div>
+
+<div class="game-card">
+  <img class="game-img" src="images/璀璨宝石.jpg">
+  <div class="game-info">
+    <div class="game-name">璀璨宝石</div>
+    <div class="game-desc">轻策桌游，简单易上手，宝石兑换策略，男女都爱玩</div>
+  </div>
+  <input type="checkbox" class="game-check" value="璀璨宝石">
+</div>
+
+<div class="game-card">
+  <img class="game-img" src="images/诡镇奇谈.jpg">
+  <div class="game-info">
+    <div class="game-name">诡镇奇谈</div>
+    <div class="game-desc">合作冒险类桌游，克苏鲁主题，需要团队配合解谜</div>
+  </div>
+  <input type="checkbox" class="game-check" value="诡镇奇谈">
+</div>
+
+<button class="submit-btn" onclick="submit()">提交我的选择</button>
+
+<script>
+function submit() {
+  const name = document.getElementById('username').value.trim()
+  if (!name) {
+    alert('请先填写名字')
+    return
+  }
+
+  const checks = document.querySelectorAll('.game-check:checked')
+  if (checks.length === 0) {
+    alert('请至少选择一款桌游')
+    return
+  }
+
+  const games = Array.from(checks).map(i => i.value)
+  const result = `名字：${name}\n选择：${games.join('、')}`
+
+  alert('提交成功！\n\n' + result)
+}
+</script>
+
+</body>
+</html>
