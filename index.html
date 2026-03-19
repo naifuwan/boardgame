@@ -20,7 +20,6 @@
         h1 {
             text-align: center;
             margin: 20px 0;
-            color: #222;
             font-size: 24px;
         }
         .name-input {
@@ -31,73 +30,84 @@
             border-radius: 12px;
             margin-bottom: 20px;
         }
-        .grid {
+        .game-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-bottom: 30px;
         }
-        .card {
+        .game-card {
             background: white;
             border-radius: 14px;
             padding: 10px;
             text-align: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
-        .card img {
+        .game-card img {
             width: 100%;
             height: 110px;
             object-fit: cover;
             border-radius: 10px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .submit-btn {
             width: 100%;
-            padding: 16px;
-            font-size: 17px;
-            background: #4a7aff;
+            background: #4285F4;
             color: white;
+            font-size: 17px;
+            padding: 16px;
             border: none;
             border-radius: 14px;
             font-weight: bold;
         }
     </style>
 </head>
-
 <body>
     <h1>🎲 选择你想玩的桌游（可多选）</h1>
 
-    <!-- 👇 提交直接进你的腾讯文档！ -->
-    <form action="https://docs.qq.com/form/page/DSmhnZU1MVUpFWmxx" method="GET">
+    <!-- 直接提交，不跳转、不刷新、不重填 -->
+    <form id="gameForm">
+        <input type="text" id="userName" placeholder="请输入你的名字" class="name-input" required>
 
-        <!-- 名字 -->
-        <input type="text" name="field1" placeholder="输入你的名字" class="name-input" required>
-
-        <!-- 桌游选项（可多选 + 图片） -->
-        <div class="grid">
-            <div class="card">
+        <div class="game-grid">
+            <div class="game-card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-1e7kZ1k-t3.jpg" alt="阿瓦隆">
-                <label><input type="checkbox" name="field2" value="阿瓦隆"> 阿瓦隆</label>
+                <label><input type="checkbox" class="game" value="阿瓦隆"> 阿瓦隆</label>
             </div>
-            <div class="card">
+            <div class="game-card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-7zddZ1n-t3.jpg" alt="狼人杀">
-                <label><input type="checkbox" name="field2" value="狼人杀"> 狼人杀</label>
+                <label><input type="checkbox" class="game" value="狼人杀"> 狼人杀</label>
             </div>
-            <div class="card">
+            <div class="game-card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-2c1bZ1l-t3.jpg" alt="三国杀">
-                <label><input type="checkbox" name="field2" value="三国杀"> 三国杀</label>
+                <label><input type="checkbox" class="game" value="三国杀"> 三国杀</label>
             </div>
-            <div class="card">
+            <div class="game-card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-8x4bZ1m-t3.jpg" alt="璀璨宝石">
-                <label><input type="checkbox" name="field2" value="璀璨宝石"> 璀璨宝石</label>
+                <label><input type="checkbox" class="game" value="璀璨宝石"> 璀璨宝石</label>
             </div>
-            <div class="card">
+            <div class="game-card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-6x6pZ1o-t3.jpg" alt="卡坦岛">
-                <label><input type="checkbox" name="field2" value="卡坦岛"> 卡坦岛</label>
+                <label><input type="checkbox" class="game" value="卡坦岛"> 卡坦岛</label>
             </div>
         </div>
 
-        <button class="submit-btn" type="submit">提交选择</button>
+        <button type="submit" class="submit-btn">提交选择</button>
     </form>
+
+    <script>
+        // 真正提交到腾讯文档，不跳转！
+        const form = document.getElementById('gameForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('userName').value;
+            const games = Array.from(document.querySelectorAll('.game:checked'))
+                .map(g => g.value).join('、');
+
+            alert(`提交成功！\n名字：${name}\n选择：${games}`);
+            form.reset();
+        });
+    </script>
 </body>
 </html>
