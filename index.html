@@ -1,30 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<title>选桌游</title>
+    <meta charset="UTF-8">
+    <title>选择桌游</title>
+    <style>
+        .game {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        .game img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
-<h2>选择你想玩的桌游</h2>
+    <h1>选择你想玩的桌游（可多选）</h1>
 
-<form action="https://formsubmit.co/wannh@sina.com" method="POST">
-  <input type="hidden" name="_captcha" value="false">
-  <input type="hidden" name="_subject" value="有人选了桌游！">
+    <form action="https://formsubmit.co/wannh@sina.com" method="POST">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_subject" value="有人报名桌游！">
 
-  你的名字：<br>
-  <input type="text" name="姓名" required><br><br>
+        <p>你的名字：</p>
+        <input type="text" name="姓名" required>
 
-  选择桌游：<br>
-  <select name="选择的桌游" required>
-    <option value="阿瓦隆">阿瓦隆</option>
-    <option value="狼人杀">狼人杀</option>
-    <option value="三国杀">三国杀</option>
-    <option value="璀璨宝石">璀璨宝石</option>
-    <option value="卡坦岛">卡坦岛</option>
-  </select><br><br>
+        <h3>选择桌游（可多选）：</h3>
 
-  <button type="submit">提交</button>
-</form>
+        <div class="game">
+            <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-1e7kZ1k-t3.jpg" alt="阿瓦隆"><br>
+            <input type="checkbox" name="桌游" value="阿瓦隆"> 阿瓦隆
+        </div>
 
+        <div class="game">
+            <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-7zddZ1n-t3.jpg" alt="狼人杀"><br>
+            <input type="checkbox" name="桌游" value="狼人杀"> 狼人杀
+        </div>
+
+        <div class="game">
+            <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-2c1bZ1l-t3.jpg" alt="三国杀"><br>
+            <input type="checkbox" name="桌游" value="三国杀"> 三国杀
+        </div>
+
+        <div class="game">
+            <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-8x4bZ1m-t3.jpg" alt="璀璨宝石"><br>
+            <input type="checkbox" name="桌游" value="璀璨宝石"> 璀璨宝石
+        </div>
+
+        <div class="game">
+            <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-6x6pZ1o-t3.jpg" alt="卡坦岛"><br>
+            <input type="checkbox" name="桌游" value="卡坦岛"> 卡坦岛
+        </div>
+
+        <br><br>
+        <button type="submit">提交</button>
+    </form>
 </body>
 </html>
