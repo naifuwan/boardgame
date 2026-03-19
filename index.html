@@ -65,53 +65,41 @@
 <body>
     <h1>选择你想玩的桌游（可多选）</h1>
 
-    <form id="gameForm">
-        <input type="text" id="username" placeholder="输入你的名字" class="name-input" required>
+    <form action="https://docs.qq.com/form/api/submit" method="POST">
+        <input type="hidden" name="formId" value="DSmhnZU1MVUpFWmxx">
+        
+        <input 
+            type="text" 
+            name="field_1" 
+            placeholder="输入你的名字" 
+            class="name-input" 
+            required
+        >
 
         <div class="grid">
             <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-1e7kZ1k-t3.jpg" alt="阿瓦隆">
-                <label><input type="checkbox" class="game" value="阿瓦隆"> 阿瓦隆</label>
+                <label><input type="checkbox" name="field_2" value="阿瓦隆"> 阿瓦隆</label>
             </div>
             <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-7zddZ1n-t3.jpg" alt="狼人杀">
-                <label><input type="checkbox" class="game" value="狼人杀"> 狼人杀</label>
+                <label><input type="checkbox" name="field_2" value="狼人杀"> 狼人杀</label>
             </div>
             <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-2c1bZ1l-t3.jpg" alt="三国杀">
-                <label><input type="checkbox" class="game" value="三国杀"> 三国杀</label>
+                <label><input type="checkbox" name="field_2" value="三国杀"> 三国杀</label>
             </div>
             <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-8x4bZ1m-t3.jpg" alt="璀璨宝石">
-                <label><input type="checkbox" class="game" value="璀璨宝石"> 璀璨宝石</label>
+                <label><input type="checkbox" name="field_2" value="璀璨宝石"> 璀璨宝石</label>
             </div>
             <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-6x6pZ1o-t3.jpg" alt="卡坦岛">
-                <label><input type="checkbox" class="game" value="卡坦岛"> 卡坦岛</label>
+                <label><input type="checkbox" name="field_2" value="卡坦岛"> 卡坦岛</label>
             </div>
         </div>
 
         <button class="submit" type="submit">提交选择</button>
     </form>
-
-    <script src="https://smtpjs.com/v3/smtp.js"></script>
-    <script>
-        const form = document.getElementById('gameForm');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('username').value;
-            const games = Array.from(document.querySelectorAll('.game:checked')).map(g => g.value).join('、');
-
-            await Email.send({
-                SecureToken: "965401b5-ec07-4345-8a3e-89e161812992",
-                To: "wannh@sina.com",
-                From: "boardgame@github.io",
-                Subject: "桌游选择提交",
-                Body: `名字：${name}<br>选择的桌游：${games}`
-            });
-
-            alert("提交成功！组织者已收到通知");
-        });
-    </script>
 </body>
 </html>
