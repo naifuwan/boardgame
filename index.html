@@ -14,7 +14,7 @@
         body {
             background: #f7f8fa;
             padding: 20px;
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto;
         }
         h1 {
@@ -33,6 +33,11 @@
         #playerCount {
             width: 100%;
             accent-color: #4285F4;
+            height: 6px;
+        }
+        #playerValue {
+            color: #4285F4;
+            font-weight: bold;
         }
         .name-input {
             width: 100%;
@@ -41,36 +46,48 @@
             border: 1px solid #ddd;
             border-radius: 12px;
             margin-bottom: 20px;
+            outline: none;
+        }
+        .name-input:focus {
+            border-color: #4285F4;
         }
         .game-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
             margin-bottom: 30px;
         }
         .game-card {
             background: white;
             border-radius: 14px;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
         .game-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .game-card img {
             width: 100%;
-            height: 110px;
+            height: 130px;
             object-fit: cover;
             border-radius: 10px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            background-color: #f1f3f5;
+        }
+        .game-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
         }
         .game-info {
             font-size: 12px;
             color: #666;
-            margin: 4px 0;
+            margin-bottom: 8px;
+            line-height: 1.4;
         }
         .submit-btn {
             width: 100%;
@@ -82,9 +99,19 @@
             border-radius: 14px;
             font-weight: bold;
             cursor: pointer;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover {
+            background: #3367d6;
         }
         .game-card.hide {
             display: none;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #333;
         }
     </style>
 </head>
@@ -101,88 +128,265 @@
     <form action="https://formspree.io/f/xvzwlrqe" method="POST">
         <input type="hidden" name="_captcha" value="false">
         
-        <!-- 姓名 -->
-        <label style="display:block; margin-bottom:8px;">你的名字：</label>
-        <input type="text" name="姓名" class="name-input" placeholder="输入名字" required>
+        <!-- 姓名输入 -->
+        <label class="form-label">你的名字：</label>
+        <input type="text" name="姓名" class="name-input" placeholder="请输入你的名字" required>
 
-        <label style="display:block; margin:20px 0 8px;">选择桌游（可多选）：</label>
-        
-        <!-- 桌游多选卡片 -->
-        <div class="game-grid">
+        <!-- 桌游多选区域 -->
+        <label class="form-label" style="margin:20px 0 8px;">选择桌游（可多选）：</label>
+        <div class="game-grid" id="gameGrid">
+            <!-- 1. 典藏宝石（璀璨宝石 Splendor） -->
             <div class="game-card" data-min="2" data-max="4">
-                <img src="splendor.jpg" alt="璀璨宝石">
-                <label><input type="checkbox" name="桌游" value="璀璨宝石"> 璀璨宝石</label>
-                <div class="game-info">2-4人 | 资源管理</div>
+                <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-8x4bZ1m-t3.jpg" alt="典藏宝石">
+                <div class="game-name"><input type="checkbox" name="桌游" value="典藏宝石（璀璨宝石 Splendor）"> 典藏宝石</div>
+                <div class="game-info">2-4人 | 资源管理+卡牌构筑</div>
             </div>
 
+            <!-- 2. 大搜查!（Unlock!） -->
             <div class="game-card" data-min="1" data-max="6">
                 <img src="unlock.jpg" alt="大搜查!">
-                <label><input type="checkbox" name="桌游" value="大搜查!"> 大搜查!</label>
-                <div class="game-info">1-6人 | 合作解谜</div>
+                <div class="game-name"><input type="checkbox" name="桌游" value="大搜查!（Unlock!）"> 大搜查!</div>
+                <div class="game-info">1-6人 | 合作解谜+App联动</div>
             </div>
 
+            <!-- 3. 失落的遗迹：阿纳克（Lost Ruins of Arnak） -->
             <div class="game-card" data-min="1" data-max="4">
                 <img src="arnak.jpg" alt="失落的遗迹：阿纳克">
-                <label><input type="checkbox" name="桌游" value="失落的遗迹：阿纳克"> 阿纳克</label>
-                <div class="game-info">1-4人 | 卡牌构筑</div>
+                <div class="game-name"><input type="checkbox" name="桌游" value="失落的遗迹：阿纳克（Lost Ruins of Arnak）"> 失落的遗迹</div>
+                <div class="game-info">1-4人 | 卡牌构筑+工人放置</div>
             </div>
 
+            <!-- 4. 小黑屋（第三版，Betrayal at House on the Hill） -->
             <div class="game-card" data-min="3" data-max="6">
                 <img src="betrayal.jpg" alt="小黑屋">
-                <label><input type="checkbox" name="桌游" value="小黑屋"> 小黑屋</label>
-                <div class="game-info">3-6人 | 阵营对抗</div>
+                <div class="game-name"><input type="checkbox" name="桌游" value="小黑屋（第三版，Betrayal at House on the Hill）"> 小黑屋</div>
+                <div class="game-info">3-6人 | 半合作探索+阵营对抗</div>
             </div>
 
+            <!-- 5. 七大奇迹：对决（7 Wonders Duel，含市政广场扩展） -->
             <div class="game-card" data-min="2" data-max="2">
                 <img src="7wonders-duel.jpg" alt="七大奇迹：对决">
-                <label><input type="checkbox" name="桌游" value="七大奇迹：对决"> 七大奇迹对决</label>
-                <div class="game-info">2人 | 文明策略</div>
+                <div class="game-name"><input type="checkbox" name="桌游" value="七大奇迹：对决（7 Wonders Duel，含市政广场扩展）"> 七大奇迹对决</div>
+                <div class="game-info">2人 | 文明发展+三胜利路径</div>
             </div>
 
-            <div class="game-card" data-min="4" data-max="10">
-                <img src="avalon-quest.jpg" alt="阿瓦隆：亚瑟传说">
-                <label><input type="checkbox" name="桌游" value="阿瓦隆：亚瑟传说"> 阿瓦隆</label>
-                <div class="game-info">4-10人 | 身份推理</div>
+            <!-- 6. 七大奇迹（7 Wonders） -->
+            <div class="game-card" data-min="2" data-max="7">
+                <img src="7wonders.jpg" alt="七大奇迹">
+                <div class="game-name"><input type="checkbox" name="桌游" value="七大奇迹（7 Wonders）"> 七大奇迹</div>
+                <div class="game-info">2-7人 | 文明发展+区域竞争</div>
             </div>
 
+            <!-- 7. 血与刃的白蔷薇 -->
+            <div class="game-card" data-min="5" data-max="10">
+                <img src="white-rose.jpg" alt="血与刃的白蔷薇">
+                <div class="game-name"><input type="checkbox" name="桌游" value="血与刃的白蔷薇"> 血与刃的白蔷薇</div>
+                <div class="game-info">5-10人 | 隐藏身份+阵营推理</div>
+            </div>
+
+            <!-- 8. 骗子酒吧（Liars's Bar） -->
+            <div class="game-card" data-min="3" data-max="8">
+                <img src="liars-bar.jpg" alt="骗子酒吧">
+                <div class="game-name"><input type="checkbox" name="桌游" value="骗子酒吧（Liars's Bar）"> 骗子酒吧</div>
+                <div class="game-info">3-8人 | 吹牛欺诈+轮次下注</div>
+            </div>
+
+            <!-- 9. 诡镇奇谈：饥渴深渊（Arkham Horror: The RPG） -->
+            <div class="game-card" data-min="2" data-max="6">
+                <img src="arkham-rpg.jpg" alt="诡镇奇谈：饥渴深渊">
+                <div class="game-name"><input type="checkbox" name="桌游" value="诡镇奇谈：饥渴深渊（Arkham Horror: The RPG）"> 诡镇奇谈RPG</div>
+                <div class="game-info">2-6人 | 克苏鲁TRPG+角色扮演</div>
+            </div>
+
+            <!-- 10. 诡镇奇谈：卡牌版（Arkham Horror: The Card Game） -->
+            <div class="game-card" data-min="1" data-max="4">
+                <img src="arkham-lcg.jpg" alt="诡镇奇谈：卡牌版">
+                <div class="game-name"><input type="checkbox" name="桌游" value="诡镇奇谈：卡牌版（Arkham Horror: The Card Game）"> 诡镇奇谈卡牌版</div>
+                <div class="game-info">1-4人 | 克苏鲁合作卡牌</div>
+            </div>
+
+            <!-- 11. 炸弹猫咪（Bomb Kittens） -->
+            <div class="game-card" data-min="2" data-max="5">
+                <img src="bomb-kittens.jpg" alt="炸弹猫咪">
+                <div class="game-name"><input type="checkbox" name="桌游" value="炸弹猫咪（Bomb Kittens）"> 炸弹猫咪</div>
+                <div class="game-info">2-5人 | 欢乐手牌+风险规避</div>
+            </div>
+
+            <!-- 12. 翻苏丹（刺杀苏丹王，Sultans of Karaya） -->
+            <div class="game-card" data-min="5" data-max="15">
+                <img src="sultans.jpg" alt="翻苏丹">
+                <div class="game-name"><input type="checkbox" name="桌游" value="翻苏丹（刺杀苏丹王，Sultans of Karaya）"> 翻苏丹</div>
+                <div class="game-info">5-15人 | 阵营对抗+身份推理</div>
+            </div>
+
+            <!-- 13. 幽港迷城：纽扣&虫子（Gloomhaven: Buttons & Bugs） -->
+            <div class="game-card" data-min="1" data-max="2">
+                <img src="gloomhaven-buttons.jpg" alt="幽港迷城：纽扣&虫子">
+                <div class="game-name"><input type="checkbox" name="桌游" value="幽港迷城：纽扣&虫子（Gloomhaven: Buttons & Bugs）"> 幽港迷城纽扣虫子</div>
+                <div class="game-info">1-2人 | 微型战术+角色成长</div>
+            </div>
+
+            <!-- 14. 茂林源记：森林的权力之战（Root） -->
+            <div class="game-card" data-min="2" data-max="4">
+                <img src="root.jpg" alt="茂林源记">
+                <div class="game-name"><input type="checkbox" name="桌游" value="茂林源记：森林的权力之战（Root）"> 茂林源记</div>
+                <div class="game-info">2-4人 | 不对称对抗+区域控制</div>
+            </div>
+
+            <!-- 15. 幽港迷城：雄狮之颚（Gloomhaven: Jaws of the Lion） -->
+            <div class="game-card" data-min="1" data-max="4">
+                <img src="gloomhaven-jaws.jpg" alt="幽港迷城：雄狮之颚">
+                <div class="game-name"><input type="checkbox" name="桌游" value="幽港迷城：雄狮之颚（Gloomhaven: Jaws of the Lion）"> 幽港迷城雄狮之颚</div>
+                <div class="game-info">1-4人 | 战术战斗+剧情驱动</div>
+            </div>
+
+            <!-- 16. 王权骰铸 重掷版（Dice Throne） -->
+            <div class="game-card" data-min="2" data-max="10">
+                <img src="dice-throne.jpg" alt="王权骰铸 重掷版">
+                <div class="game-name"><input type="checkbox" name="桌游" value="王权骰铸 重掷版（Dice Throne）"> 王权骰铸</div>
+                <div class="game-info">2-10人 | 骰子对战+角色构筑</div>
+            </div>
+
+            <!-- 17. 拼布艺术：圣诞版（Patchwork Christmas Edition） -->
+            <div class="game-card" data-min="2" data-max="2">
+                <img src="patchwork-xmas.jpg" alt="拼布艺术：圣诞版">
+                <div class="game-name"><input type="checkbox" name="桌游" value="拼布艺术：圣诞版（Patchwork Christmas Edition）"> 拼布艺术圣诞版</div>
+                <div class="game-info">2人 | 拼布策略+时间规划</div>
+            </div>
+
+            <!-- 18. 驴桥（Donkey Bridge） -->
+            <div class="game-card" data-min="2" data-max="6">
+                <img src="donkey-bridge.jpg" alt="驴桥">
+                <div class="game-name"><input type="checkbox" name="桌游" value="驴桥（Donkey Bridge）"> 驴桥</div>
+                <div class="game-info">2-6人 | 手牌管理+点数博弈</div>
+            </div>
+
+            <!-- 19. 瘟疫危机：传承 第一季（Pandemic Legacy Season 1） -->
+            <div class="game-card" data-min="2" data-max="4">
+                <img src="pandemic-legacy.jpg" alt="瘟疫危机：传承 第一季">
+                <div class="game-name"><input type="checkbox" name="桌游" value="瘟疫危机：传承 第一季（Pandemic Legacy Season 1）"> 瘟疫危机传承</div>
+                <div class="game-info">2-4人 | 合作抗疫+传承机制</div>
+            </div>
+
+            <!-- 20. 柯尔特快车（Colt Express，大盒版） -->
             <div class="game-card" data-min="2" data-max="8">
-                <img src="colt-express.jpg" alt="柯尔特快车">
-                <label><input type="checkbox" name="桌游" value="柯尔特快车"> 柯尔特快车</label>
-                <div class="game-info">2-8人 | 西部抢劫</div>
+                <img src="colt-express.jpg" alt="柯尔特快车（大盒版）">
+                <div class="game-name"><input type="checkbox" name="桌游" value="柯尔特快车（Colt Express，大盒版）"> 柯尔特快车</div>
+                <div class="game-info">2-8人 | 西部题材+火车抢劫</div>
             </div>
 
+            <!-- 21. 热力追缉（Heat: Pedal to the Metal） -->
+            <div class="game-card" data-min="1" data-max="6">
+                <img src="heat.jpg" alt="热力追缉">
+                <div class="game-name"><input type="checkbox" name="桌游" value="热力追缉（Heat: Pedal to the Metal）"> 热力追缉</div>
+                <div class="game-info">1-6人 | 赛车题材+赛道竞速</div>
+            </div>
+
+            <!-- 22. 时空神探：巴黎1920（Kronologic） -->
+            <div class="game-card" data-min="1" data-max="4">
+                <img src="kronologic.jpg" alt="时空神探：巴黎1920">
+                <div class="game-name"><input type="checkbox" name="桌游" value="时空神探：巴黎1920（Kronologic）"> 时空神探</div>
+                <div class="game-info">1-4人 | 时间推理+案件还原</div>
+            </div>
+
+            <!-- 23. 阿瓦隆：亚瑟传说 -->
+            <div class="game-card" data-min="4" data-max="10">
+                <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-1e7kZ1k-t3.jpg" alt="阿瓦隆：亚瑟传说">
+                <div class="game-name"><input type="checkbox" name="桌游" value="阿瓦隆：亚瑟传说"> 阿瓦隆：亚瑟传说</div>
+                <div class="game-info">4-10人 | 亚瑟王题材+阵营对抗</div>
+            </div>
+
+            <!-- 24. UNO -->
+            <div class="game-card" data-min="2" data-max="10">
+                <img src="uno.jpg" alt="UNO">
+                <div class="game-name"><input type="checkbox" name="桌游" value="UNO"> UNO</div>
+                <div class="game-info">2-10人 | 颜色匹配+欢乐互动</div>
+            </div>
+
+            <!-- 25. 柏德之门：背叛（Betrayal at Baldur's Gate） -->
+            <div class="game-card" data-min="3" data-max="6">
+                <img src="betrayal-baldurs-gate.jpg" alt="柏德之门：背叛">
+                <div class="game-name"><input type="checkbox" name="桌游" value="柏德之门：背叛（Betrayal at Baldur's Gate）"> 柏德之门背叛</div>
+                <div class="game-info">3-6人 | 冒险探索+剧本变化</div>
+            </div>
+
+            <!-- 26. 勃根地城堡 豪华版（The Castles of Burgundy） -->
+            <div class="game-card" data-min="2" data-max="4">
+                <img src="castles-of-burgundy.jpg" alt="勃根地城堡 豪华版">
+                <div class="game-name"><input type="checkbox" name="桌游" value="勃根地城堡 豪华版（The Castles of Burgundy）"> 勃根地城堡</div>
+                <div class="game-info">2-4人 | 德式策略+资源规划</div>
+            </div>
+
+            <!-- 27. 狼人杀 -->
             <div class="game-card" data-min="6" data-max="18">
-                <img src="werewolf.jpg" alt="狼人杀">
-                <label><input type="checkbox" name="桌游" value="狼人杀"> 狼人杀</label>
-                <div class="game-info">6-18人 | 社交推理</div>
+                <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-7zddZ1n-t3.jpg" alt="狼人杀">
+                <div class="game-name"><input type="checkbox" name="桌游" value="狼人杀"> 狼人杀</div>
+                <div class="game-info">6-18人 | 身份推理+语言辩论</div>
             </div>
 
-            <div class="game-card" data-min="3" data-max="18">
-                <img src="flip7.jpg" alt="Flip7">
-                <label><input type="checkbox" name="桌游" value="Flip7"> Flip7</label>
-                <div class="game-info">3-18人 | 欢乐博弈</div>
-            </div>
-
+            <!-- 28. 孤胆谢尔曼 -->
             <div class="game-card" data-min="1" data-max="1">
-                <img src="resistance-solo.jpg" alt="抵抗！">
-                <label><input type="checkbox" name="桌游" value="抵抗！"> 抵抗！</label>
-                <div class="game-info">1人 | 单人叙事</div>
+                <img src="lone-sherman.jpg" alt="孤胆谢尔曼">
+                <div class="game-name"><input type="checkbox" name="桌游" value="孤胆谢尔曼"> 孤胆谢尔曼</div>
+                <div class="game-info">1人 | 单人战棋+二战题材</div>
+            </div>
+
+            <!-- 29. 抵抗！（单人版） -->
+            <div class="game-card" data-min="1" data-max="1">
+                <img src="resistance-solo.jpg" alt="抵抗！（单人版）">
+                <div class="game-name"><input type="checkbox" name="桌游" value="抵抗！（单人版）"> 抵抗！（单人版）</div>
+                <div class="game-info">1人 | 二战叙事+剧情选择</div>
+            </div>
+
+            <!-- 30. 不屈战场：诺曼底（Undaunted: Normandy） -->
+            <div class="game-card" data-min="2" data-max="2">
+                <img src="undaunted-normandy.jpg" alt="不屈战场：诺曼底">
+                <div class="game-name"><input type="checkbox" name="桌游" value="不屈战场：诺曼底（Undaunted: Normandy）"> 不屈战场诺曼底</div>
+                <div class="game-info">2人 | 二战战棋+卡牌驱动</div>
+            </div>
+
+            <!-- 31. 恶夜杀机（Terrorscape） -->
+            <div class="game-card" data-min="1" data-max="4">
+                <img src="terrorscape.jpg" alt="恶夜杀机">
+                <div class="game-name"><input type="checkbox" name="桌游" value="恶夜杀机（Terrorscape）"> 恶夜杀机</div>
+                <div class="game-info">1-4人 | 恐怖生存+不对称对抗</div>
+            </div>
+
+            <!-- 32. 卡卡颂 大盒版（Carcassonne Big Box） -->
+            <div class="game-card" data-min="2" data-max="5">
+                <img src="carcassonne-bigbox.jpg" alt="卡卡颂 大盒版">
+                <div class="game-name"><input type="checkbox" name="桌游" value="卡卡颂 大盒版（Carcassonne Big Box）"> 卡卡颂大盒版</div>
+                <div class="game-info">2-5人 | 区域控制+拼图放置</div>
+            </div>
+
+            <!-- 33. Flip 7 -->
+            <div class="game-card" data-min="3" data-max="18">
+                <img src="flip7.jpg" alt="Flip 7">
+                <div class="game-name"><input type="checkbox" name="桌游" value="Flip 7"> Flip 7</div>
+                <div class="game-info">3-18人 | 压分博弈+分数竞速</div>
+            </div>
+
+            <!-- 34. Tacta -->
+            <div class="game-card" data-min="2" data-max="8">
+                <img src="tacta.jpg" alt="Tacta">
+                <div class="game-name"><input type="checkbox" name="桌游" value="Tacta"> Tacta</div>
+                <div class="game-info">2-8人 | 抽象策略+板块拼接</div>
             </div>
         </div>
 
+        <!-- 提交按钮 -->
         <button type="submit" class="submit-btn">提交选择</button>
     </form>
 
     <script>
-        // 人数筛选
+        // 人数筛选逻辑
         const slider = document.getElementById('playerCount');
         const valueDisplay = document.getElementById('playerValue');
-        const cards = document.querySelectorAll('.game-card');
+        const gameCards = document.querySelectorAll('.game-card');
 
-        slider.addEventListener('input', function() {
-            const count = parseInt(this.value);
-            valueDisplay.textContent = count;
-            cards.forEach(card => {
+        // 初始化显示对应人数的桌游
+        function filterGamesByPlayerCount(count) {
+            gameCards.forEach(card => {
                 const min = parseInt(card.dataset.min);
                 const max = parseInt(card.dataset.max);
                 if (count >= min && count <= max) {
@@ -191,6 +395,18 @@
                     card.classList.add('hide');
                 }
             });
+        }
+
+        // 滑块事件监听
+        slider.addEventListener('input', function() {
+            const currentCount = parseInt(this.value);
+            valueDisplay.textContent = currentCount;
+            filterGamesByPlayerCount(currentCount);
+        });
+
+        // 页面加载时默认筛选2人桌游
+        window.addEventListener('load', () => {
+            filterGamesByPlayerCount(2);
         });
     </script>
 </body>
