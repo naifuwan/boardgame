@@ -10,116 +10,108 @@
             margin: 0;
             padding: 0;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            font-family: system-ui, sans-serif;
             background: #f7f8fa;
             padding: 20px;
             max-width: 600px;
             margin: 0 auto;
         }
-
         h1 {
             text-align: center;
             margin: 20px 0;
-            color: #333;
-            font-size: 24px;
+            color: #222;
         }
-
-        .name-box {
-            margin-bottom: 20px;
-        }
-
-        .name-box input {
+        .name-input {
             width: 100%;
             padding: 14px;
             font-size: 16px;
             border: 1px solid #ddd;
             border-radius: 12px;
-            outline: none;
+            margin-bottom: 20px;
         }
-
-        .game-grid {
+        .grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-bottom: 30px;
         }
-
-        .game-item {
+        .card {
             background: white;
             border-radius: 14px;
             padding: 10px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 6px #0001;
         }
-
-        .game-item img {
+        .card img {
             width: 100%;
             height: 110px;
             object-fit: cover;
             border-radius: 10px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
-
-        .game-item label {
-            font-size: 15px;
-            color: #333;
-            display: block;
-        }
-
-        .submit-btn {
+        .submit {
             width: 100%;
-            background: #4b7dff;
-            color: white;
-            font-size: 18px;
             padding: 16px;
+            font-size: 17px;
+            background: #4a7aff;
+            color: white;
             border: none;
             border-radius: 14px;
             font-weight: bold;
         }
     </style>
 </head>
-
 <body>
     <h1>选择你想玩的桌游（可多选）</h1>
 
-    <form action="https://formsubmit.co/d44c40da7b0a649d5a470f0c2d9b3cb7" method="POST">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_subject" value="有人提交了桌游选择！">
+    <form id="gameForm">
+        <input type="text" id="username" placeholder="输入你的名字" class="name-input" required>
 
-        <div class="name-box">
-            <input type="text" name="姓名" placeholder="请输入你的名字" required>
-        </div>
-
-        <div class="game-grid">
-            <div class="game-item">
+        <div class="grid">
+            <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-1e7kZ1k-t3.jpg" alt="阿瓦隆">
-                <label><input type="checkbox" name="桌游" value="阿瓦隆"> 阿瓦隆</label>
+                <label><input type="checkbox" class="game" value="阿瓦隆"> 阿瓦隆</label>
             </div>
-
-            <div class="game-item">
+            <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-7zddZ1n-t3.jpg" alt="狼人杀">
-                <label><input type="checkbox" name="桌游" value="狼人杀"> 狼人杀</label>
+                <label><input type="checkbox" class="game" value="狼人杀"> 狼人杀</label>
             </div>
-
-            <div class="game-item">
+            <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-2c1bZ1l-t3.jpg" alt="三国杀">
-                <label><input type="checkbox" name="桌游" value="三国杀"> 三国杀</label>
+                <label><input type="checkbox" class="game" value="三国杀"> 三国杀</label>
             </div>
-
-            <div class="game-item">
+            <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-8x4bZ1m-t3.jpg" alt="璀璨宝石">
-                <label><input type="checkbox" name="桌游" value="璀璨宝石"> 璀璨宝石</label>
+                <label><input type="checkbox" class="game" value="璀璨宝石"> 璀璨宝石</label>
             </div>
-
-            <div class="game-item">
+            <div class="card">
                 <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-6x6pZ1o-t3.jpg" alt="卡坦岛">
-                <label><input type="checkbox" name="桌游" value="卡坦岛"> 卡坦岛</label>
+                <label><input type="checkbox" class="game" value="卡坦岛"> 卡坦岛</label>
             </div>
         </div>
 
-        <button class="submit-btn" type="submit">提交选择</button>
+        <button class="submit" type="submit">提交选择</button>
     </form>
+
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script>
+        const form = document.getElementById('gameForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('username').value;
+            const games = Array.from(document.querySelectorAll('.game:checked')).map(g => g.value).join('、');
+
+            await Email.send({
+                SecureToken: "965401b5-ec07-4345-8a3e-89e161812992",
+                To: "wannh@sina.com",
+                From: "boardgame@github.io",
+                Subject: "桌游选择提交",
+                Body: `名字：${name}<br>选择的桌游：${games}`
+            });
+
+            alert("提交成功！组织者已收到通知");
+        });
+    </script>
 </body>
 </html>
