@@ -1,413 +1,626 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>桌游选择</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, sans-serif;
-        }
-        body {
-            background: #f7f8fa;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 24px;
-        }
-        .slider-container {
-            margin: 0 auto 30px;
-            text-align: center;
-        }
-        .slider-label {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        #playerCount {
-            width: 100%;
-            accent-color: #4285F4;
-            height: 6px;
-        }
-        #playerValue {
-            color: #4285F4;
-            font-weight: bold;
-        }
-        .name-input {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            outline: none;
-        }
-        .name-input:focus {
-            border-color: #4285F4;
-        }
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 30px;
-        }
-        .game-card {
-            background: white;
-            border-radius: 14px;
-            padding: 12px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .game-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .game-card img {
-            width: 100%;
-            height: 130px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            background-color: #f1f3f5;
-        }
-        .game-name {
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 6px;
-        }
-        .game-info {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-        .submit-btn {
-            width: 100%;
-            background: #4285F4;
-            color: white;
-            font-size: 17px;
-            padding: 16px;
-            border: none;
-            border-radius: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .submit-btn:hover {
-            background: #3367d6;
-        }
-        .game-card.hide {
-            display: none;
-        }
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 16px;
-            color: #333;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>桌游投票</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f3ee;
+      --card: #ffffff;
+      --accent: #c8392b;
+      --accent-light: #fdf0ee;
+      --accent-mid: #e8b4ae;
+      --text: #1c1917;
+      --sub: #78716c;
+      --border: #e7e5e0;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans SC', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 0 0 80px;
+    }
+
+    /* ── Header ── */
+    .hero {
+      background: var(--text);
+      color: #fff;
+      padding: 32px 20px 28px;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: #a8a29e;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .hero h1 {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .hero h1 span { color: #e87c6f; }
+    .hero-sub {
+      font-size: 13px;
+      color: #a8a29e;
+    }
+
+    /* ── Controls bar ── */
+    .controls {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .controls-inner { max-width: 880px; margin: 0 auto; }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .slider-row label { font-size: 13px; color: var(--sub); white-space: nowrap; }
+    .slider-row input[type=range] { flex: 1; accent-color: var(--accent); height: 4px; cursor: pointer; }
+    .count-pill {
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      min-width: 44px;
+      text-align: center;
+    }
+    .name-row { display: flex; align-items: center; gap: 8px; }
+    .name-row label { font-size: 13px; color: var(--sub); white-space: nowrap; }
+    .name-input {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      background: var(--bg);
+      transition: border-color 0.15s;
+    }
+    .name-input:focus { border-color: var(--accent); }
+    .selected-tally {
+      font-size: 12px;
+      color: var(--sub);
+      text-align: right;
+      margin-top: 8px;
+    }
+    .selected-tally strong { color: var(--accent); }
+
+    /* ── Page body ── */
+    .page-body { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+
+    /* ── Category section ── */
+    .category-section { margin-top: 28px; }
+    .cat-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .cat-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .cat-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .cat-count {
+      font-size: 11px;
+      color: var(--sub);
+      background: var(--border);
+      padding: 1px 7px;
+      border-radius: 10px;
+    }
+    .cat-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ── Game grid ── */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    /* ── Game card ── */
+    .game-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+    .game-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      border-color: #c4bfb8;
+    }
+    .game-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+    .game-card.hide { display: none; }
+    .game-card input[type=checkbox] { display: none; }
+
+    /* ── Image area ── */
+    .img-wrap {
+      width: 100%;
+      height: 110px;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .game-card:hover .img-wrap img { transform: scale(1.04); }
+    .img-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+    }
+    .shimmer {
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, #e9ecf3 25%, #d8dce8 50%, #e9ecf3 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* check badge */
+    .check-badge {
+      position: absolute;
+      top: 7px; right: 7px;
+      width: 22px; height: 22px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .check-badge svg { width: 12px; height: 12px; }
+    .game-card.selected .check-badge { display: flex; }
+
+    /* player badge */
+    .player-badge {
+      position: absolute;
+      bottom: 7px; left: 7px;
+      background: rgba(0,0,0,0.62);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ── Card body ── */
+    .card-body { padding: 10px 12px 12px; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    .card-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .tag {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+    }
+    .card-desc {
+      font-size: 11px;
+      color: var(--sub);
+      line-height: 1.55;
+      border-top: 1px solid var(--border);
+      padding-top: 6px;
+      margin-top: 2px;
+    }
+
+    /* ── Category color themes ── */
+    /* 社交推理 */
+    .cat-social .cat-dot { background: #7c3aed; }
+    .cat-social .tag { background: #f5f3ff; color: #5b21b6; border-color: #ddd6fe; }
+    /* 策略经营 */
+    .cat-strategy .cat-dot { background: #b45309; }
+    .cat-strategy .tag { background: #fffbeb; color: #92400e; border-color: #fcd34d; }
+    /* 合作解谜 */
+    .cat-coop .cat-dot { background: #0369a1; }
+    .cat-coop .tag { background: #f0f9ff; color: #0c4a6e; border-color: #bae6fd; }
+    /* 对战竞技 */
+    .cat-battle .cat-dot { background: #be123c; }
+    .cat-battle .tag { background: #fff1f2; color: #9f1239; border-color: #fecdd3; }
+    /* 轻松派对 */
+    .cat-party .cat-dot { background: #047857; }
+    .cat-party .tag { background: #ecfdf5; color: #064e3b; border-color: #a7f3d0; }
+    /* 战棋冒险 */
+    .cat-wargame .cat-dot { background: #374151; }
+    .cat-wargame .tag { background: #f9fafb; color: #1f2937; border-color: #d1d5db; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 40px;
+      color: var(--sub);
+      font-size: 14px;
+      display: none;
+    }
+    .empty-state.show { display: block; }
+
+    /* ── Submit ── */
+    .submit-wrap {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      z-index: 20;
+    }
+    .submit-inner { max-width: 880px; margin: 0 auto; display: flex; gap: 12px; align-items: center; }
+    .submit-btn {
+      flex: 1;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+      font-weight: 700;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.02em;
+    }
+    .submit-btn:hover { background: #a82e22; }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-meta { font-size: 12px; color: var(--sub); text-align: center; line-height: 1.4; white-space: nowrap; }
+    .submit-meta strong { display: block; font-size: 18px; color: var(--accent); font-weight: 700; }
+  </style>
 </head>
 <body>
-    <h1>🎲 选择你想玩的桌游（可多选）</h1>
 
-    <!-- 人数筛选 -->
-    <div class="slider-container">
-        <div class="slider-label">当前人数：<span id="playerValue">2</span> 人</div>
-        <input type="range" id="playerCount" min="1" max="18" value="2">
+<div class="hero">
+  <div class="hero-eyebrow">Game Night Vote</div>
+  <h1>选你想玩的<span>桌游</span></h1>
+  <div class="hero-sub">可多选 · 提交后统计人气</div>
+</div>
+
+<form action="https://formspree.io/f/xvzwlrqe" method="POST" id="mainForm">
+  <input type="hidden" name="_captcha" value="false">
+
+  <div class="controls">
+    <div class="controls-inner">
+      <div class="slider-row">
+        <label>当前人数</label>
+        <input type="range" id="playerCount" min="1" max="18" value="4">
+        <div class="count-pill" id="playerValue">4 人</div>
+      </div>
+      <div class="name-row">
+        <label>你的名字</label>
+        <input type="text" name="姓名" class="name-input" placeholder="输入名字再提交" required>
+      </div>
+      <div class="selected-tally">已选 <strong id="selCount">0</strong> 款</div>
     </div>
+  </div>
 
-    <!-- Formspree 表单 -->
-    <form action="https://formspree.io/f/xvzwlrqe" method="POST">
-        <input type="hidden" name="_captcha" value="false">
-        
-        <!-- 姓名输入 -->
-        <label class="form-label">你的名字：</label>
-        <input type="text" name="姓名" class="name-input" placeholder="请输入你的名字" required>
+  <div class="page-body" id="pageBody"></div>
 
-        <!-- 桌游多选区域 -->
-        <label class="form-label" style="margin:20px 0 8px;">选择桌游（可多选）：</label>
-        <div class="game-grid" id="gameGrid">
-            <!-- 1. 典藏宝石（璀璨宝石 Splendor） -->
-            <div class="game-card" data-min="2" data-max="4">
-                <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-8x4bZ1m-t3.jpg" alt="典藏宝石">
-                <div class="game-name"><input type="checkbox" name="桌游" value="典藏宝石（璀璨宝石 Splendor）"> 典藏宝石</div>
-                <div class="game-info">2-4人 | 资源管理+卡牌构筑</div>
-            </div>
+  <div class="submit-wrap">
+    <div class="submit-inner">
+      <div class="submit-meta">
+        已选<strong id="selCount2">0</strong>款
+      </div>
+      <button type="submit" class="submit-btn">提交我的选择 →</button>
+    </div>
+  </div>
+</form>
 
-            <!-- 2. 大搜查!（Unlock!） -->
-            <div class="game-card" data-min="1" data-max="6">
-                <img src="unlock.jpg" alt="大搜查!">
-                <div class="game-name"><input type="checkbox" name="桌游" value="大搜查!（Unlock!）"> 大搜查!</div>
-                <div class="game-info">1-6人 | 合作解谜+App联动</div>
-            </div>
+<script>
+const CATEGORIES = [
+  {
+    id: "social", label: "社交推理", cls: "cat-social",
+    games: [
+      { name:"狼人杀", full:"狼人杀", min:6, max:18, img:"images/werewolf.jpg",
+        tags:["身份推理","语言辩论","阵营对抗"],
+        desc:"分为狼人、平民与神职阵营，通过夜间刀人、白天投票，决出阵营胜负" },
+      { name:"阿瓦隆", full:"阿瓦隆：亚瑟传说", min:4, max:10, img:"images/avalon.jpg",
+        tags:["亚瑟王题材","任务冒险","阵营对抗"],
+        desc:"扮演亚瑟王骑士，分忠诚与反叛阵营，通过完成任务与互相猜忌决定王国命运" },
+      { name:"血与刃的白蔷薇", full:"血与刃的白蔷薇", min:5, max:10, img:"images/white-rose.jpg",
+        tags:["隐藏身份","阵营推理","资源管理"],
+        desc:"两大阵营隐藏身份博弈，白蔷薇需完成献祭，血刃则要刺杀或破坏流程" },
+      { name:"翻苏丹", full:"翻苏丹（刺杀苏丹王，Sultans of Karaya）", min:5, max:15, img:"images/sultans.jpg",
+        tags:["阵营对抗","身份推理","社交博弈"],
+        desc:"分为苏丹阵营与刺客阵营，通过话术与行动互相试探，完成刺杀或保护苏丹" },
+      { name:"骗子酒吧", full:"骗子酒吧（Liars's Bar）", min:3, max:8, img:"images/liars-bar.jpg",
+        tags:["吹牛欺诈","手牌管理","轮次下注"],
+        desc:"轮流出牌并谎报牌型，其他人可质疑，成功欺诈或揭穿谎言可积累筹码" },
+    ]
+  },
+  {
+    id: "strategy", label: "策略经营", cls: "cat-strategy",
+    games: [
+      { name:"典藏宝石", full:"典藏宝石（璀璨宝石 Splendor）", min:2, max:4, img:"images/splendor.jpg",
+        tags:["资源管理","卡牌构筑","声望积累"],
+        desc:"收集宝石兑换发展卡，吸引贵族获取声望，率先达 15 点获胜" },
+      { name:"七大奇迹", full:"七大奇迹（7 Wonders）", min:2, max:7, img:"images/7wonders.jpg",
+        tags:["文明发展","卡牌构筑","区域竞争"],
+        desc:"代表不同古文明，收集卡牌建造奇迹、发展科技与军事，最终比拼分数" },
+      { name:"七大奇迹对决", full:"七大奇迹：对决（7 Wonders Duel，含市政广场扩展）", min:2, max:2, img:"images/7wonders-duel.jpg",
+        tags:["2人专属","文明发展","三条胜利路径"],
+        desc:"两人发展文明，通过军事压制、科技垄断或积累胜利点，率先达成任一条件获胜" },
+      { name:"勃根地城堡", full:"勃根地城堡 豪华版（The Castles of Burgundy）", min:2, max:4, img:"images/burgundy.jpg",
+        tags:["德式策略","区域控制","资源规划"],
+        desc:"掷骰选择行动，在自己的棋盘上扩张领地、收集资源，获取最高分数" },
+      { name:"失落的遗迹", full:"失落的遗迹：阿纳克（Lost Ruins of Arnak）", min:1, max:4, img:"images/arnak.jpg",
+        tags:["卡牌构筑","工人放置","资源管理"],
+        desc:"派遣工人探索遗迹，购买卡牌构筑牌库，优化资源循环，5 轮后比拼分数" },
+      { name:"拼布艺术圣诞版", full:"拼布艺术：圣诞版（Patchwork Christmas Edition）", min:2, max:2, img:"images/patchwork-xmas.jpg",
+        tags:["2人专属","拼布策略","时间规划"],
+        desc:"轮流收集布片拼接 quilt，兼顾覆盖面积与纽扣收益，最终得分更高者获胜" },
+      { name:"卡卡颂大盒版", full:"卡卡颂 大盒版（Carcassonne Big Box）", min:2, max:5, img:"images/carcassonne.jpg",
+        tags:["区域控制","拼图放置","得分竞争"],
+        desc:"轮流放置地形板块，派遣随从占领道路、城堡、修道院，最终高分者获胜" },
+      { name:"Tacta", full:"Tacta", min:2, max:8, img:"images/tacta.jpg",
+        tags:["抽象策略","板块拼接","区域控制"],
+        desc:"放置彩色板块，连接、覆盖并占领棋盘区域，以控制面积和点位得分决胜" },
+    ]
+  },
+  {
+    id: "coop", label: "合作解谜", cls: "cat-coop",
+    games: [
+      { name:"大搜查!", full:"大搜查!（Unlock!）", min:1, max:6, img:"images/unlock.jpg",
+        tags:["合作解谜","App联动","密室逃脱"],
+        desc:"翻找卡牌获取线索，用物品卡数字相加解锁新内容，在 App 计时内逃出密室" },
+      { name:"诡镇奇谈RPG", full:"诡镇奇谈：饥渴深渊（Arkham Horror: The RPG）", min:2, max:6, img:"images/arkham-rpg.jpg",
+        tags:["克苏鲁TRPG","角色扮演","剧情探索"],
+        desc:"1人担任 KP，其余扮演调查员，在 1920 年代阿卡姆探索超自然谜团，掷骰检定推进剧情" },
+      { name:"诡镇奇谈卡牌版", full:"诡镇奇谈：卡牌版（Arkham Horror: The Card Game）", min:1, max:4, img:"images/arkham-lcg.jpg",
+        tags:["克苏鲁","合作卡牌","剧情冒险"],
+        desc:"扮演调查员构筑专属牌组，在恐怖剧本中对抗古神势力，通过卡牌与资源管理推进剧情" },
+      { name:"瘟疫危机传承", full:"瘟疫危机：传承 第一季（Pandemic Legacy Season 1）", min:2, max:4, img:"images/pandemic-legacy.jpg",
+        tags:["合作抗疫","传承机制","剧情驱动"],
+        desc:"扮演疾控人员，合作阻止瘟疫扩散，游戏组件永久改变，逐步揭开阴谋" },
+      { name:"时空神探", full:"时空神探：巴黎1920（Kronologic）", min:1, max:4, img:"images/kronologic.jpg",
+        tags:["时间推理","合作解谜","案件还原"],
+        desc:"扮演时空侦探，在 1920 年代巴黎通过时间线推理，还原案件真相，找出真凶" },
+    ]
+  },
+  {
+    id: "battle", label: "对战竞技", cls: "cat-battle",
+    games: [
+      { name:"茂林源记", full:"茂林源记：森林的权力之战（Root）", min:2, max:4, img:"images/root.jpg",
+        tags:["不对称对抗","区域控制","资源管理"],
+        desc:"扮演不同阵营（猫咪、飞鸟等），各有独特机制，通过扩张与战斗争夺森林控制权" },
+      { name:"王权骰铸", full:"王权骰铸 重掷版（Dice Throne）", min:2, max:10, img:"images/dice-throne.jpg",
+        tags:["骰子驱动","角色构筑","快节奏对抗"],
+        desc:"选择独特英雄，掷骰释放技能、构筑卡组，与其他玩家进行 1v1 对战" },
+      { name:"小黑屋", full:"小黑屋（第三版，Betrayal at House on the Hill）", min:3, max:6, img:"images/betrayal.jpg",
+        tags:["半合作探索","随机剧本","阵营对抗"],
+        desc:"共同探索鬼屋，触发预兆后随机一人叛变，双方按专属剧本对抗至一方胜利" },
+      { name:"柏德之门背叛", full:"柏德之门：背叛（Betrayal at Baldur's Gate）", min:3, max:6, img:"images/betrayal-baldurs.jpg",
+        tags:["冒险探索","阵营背叛","剧本变化"],
+        desc:"在柏德之门探索，中途触发背叛剧本，部分玩家变为叛徒，各自完成目标决出胜负" },
+      { name:"恶夜杀机", full:"恶夜杀机（Terrorscape）", min:1, max:4, img:"images/terrorscape.jpg",
+        tags:["恐怖生存","不对称对抗","场景探索"],
+        desc:"逃生者需修复设施逃离，屠夫则追捕并淘汰逃生者，双方机制完全不对称" },
+      { name:"热力追缉", full:"热力追缉（Heat: Pedal to the Metal）", min:1, max:6, img:"images/heat.jpg",
+        tags:["赛车题材","手牌管理","赛道竞速"],
+        desc:"扮演赛车手，通过管理手牌与热量，在复古赛道上竞速，率先冲过终点线获胜" },
+      { name:"柯尔特快车", full:"柯尔特快车（Colt Express，大盒版）", min:2, max:8, img:"images/colt-express.jpg",
+        tags:["西部题材","手牌规划","火车抢劫"],
+        desc:"扮演西部劫匪，通过出牌规划行动顺序，在行驶的火车上争夺财宝" },
+    ]
+  },
+  {
+    id: "party", label: "轻松派对", cls: "cat-party",
+    games: [
+      { name:"UNO", full:"UNO", min:2, max:10, img:"images/uno.jpg",
+        tags:["颜色匹配","手牌管理","欢乐互动"],
+        desc:"轮流出牌匹配颜色或数字，优先出完手牌者获胜，功能牌带来反转、跳过等趣味互动" },
+      { name:"Flip 7", full:"Flip 7", min:3, max:18, img:"images/flip7.jpg",
+        tags:["压分博弈","手牌管理","分数竞速"],
+        desc:"翻牌积累分数，可选择见好就收或继续冒险，率先达到 200 分者获胜" },
+      { name:"驴桥", full:"驴桥（Donkey Bridge）", min:2, max:6, img:"images/donkey-bridge.jpg",
+        tags:["手牌管理","出牌策略","点数博弈"],
+        desc:"轮流出牌争夺桥点，通过合理规划手牌与点数，占据最多有利桥位获胜" },
+      { name:"炸弹猫咪", full:"炸弹猫咪（Bomb Kittens）", min:2, max:5, img:"images/bomb-kittens.jpg",
+        tags:["手牌管理","风险规避","欢乐"],
+        desc:"轮流出牌，抽到炸弹猫咪需用解除牌化解，最后存活的玩家获胜" },
+    ]
+  },
+  {
+    id: "wargame", label: "战棋冒险", cls: "cat-wargame",
+    games: [
+      { name:"幽港雄狮之颚", full:"幽港迷城：雄狮之颚（Gloomhaven: Jaws of the Lion）", min:1, max:4, img:"images/gloomhaven-jaws.jpg",
+        tags:["战术战斗","角色成长","剧情驱动"],
+        desc:"组成雇佣兵小队，在章节式剧情中完成任务、升级技能与装备，揭开城市背后的阴谋" },
+      { name:"幽港纽扣虫子", full:"幽港迷城：纽扣&虫子（Gloomhaven: Buttons & Bugs）", min:1, max:2, img:"images/gloomhaven-bugs.jpg",
+        tags:["微型战术","角色成长","单人友好"],
+        desc:"简化版幽港迷城，在微型棋盘上进行战术战斗，完成任务升级角色" },
+      { name:"不屈战场诺曼底", full:"不屈战场：诺曼底（Undaunted: Normandy）", min:2, max:2, img:"images/undaunted.jpg",
+        tags:["二战战棋","卡牌驱动","战术对抗"],
+        desc:"两人分别扮演盟军与德军，在诺曼底战场通过卡牌调度部队，争夺关键点位" },
+      { name:"孤胆谢尔曼", full:"孤胆谢尔曼", min:1, max:1, img:"images/lone-sherman.jpg",
+        tags:["单人战棋","战术推演","二战题材"],
+        desc:"单人操控谢尔曼坦克，在二战战场完成战术任务，对抗敌军" },
+      { name:"抵抗单人版", full:"抵抗！（单人版）", min:1, max:1, img:"images/resistance-solo.jpg",
+        tags:["单人叙事","二战题材","剧情选择"],
+        desc:"扮演法国抵抗军成员，在二战背景下通过剧情选择完成抵抗任务" },
+    ]
+  },
+];
 
-            <!-- 3. 失落的遗迹：阿纳克（Lost Ruins of Arnak） -->
-            <div class="game-card" data-min="1" data-max="4">
-                <img src="arnak.jpg" alt="失落的遗迹：阿纳克">
-                <div class="game-name"><input type="checkbox" name="桌游" value="失落的遗迹：阿纳克（Lost Ruins of Arnak）"> 失落的遗迹</div>
-                <div class="game-info">1-4人 | 卡牌构筑+工人放置</div>
-            </div>
+// ── 渲染 ──────────────────────────────────────────────────
+const pageBody = document.getElementById('pageBody');
 
-            <!-- 4. 小黑屋（第三版，Betrayal at House on the Hill） -->
-            <div class="game-card" data-min="3" data-max="6">
-                <img src="betrayal.jpg" alt="小黑屋">
-                <div class="game-name"><input type="checkbox" name="桌游" value="小黑屋（第三版，Betrayal at House on the Hill）"> 小黑屋</div>
-                <div class="game-info">3-6人 | 半合作探索+阵营对抗</div>
-            </div>
+CATEGORIES.forEach(cat => {
+  const sec = document.createElement('div');
+  sec.className = `category-section ${cat.cls}`;
+  sec.dataset.catId = cat.id;
 
-            <!-- 5. 七大奇迹：对决（7 Wonders Duel，含市政广场扩展） -->
-            <div class="game-card" data-min="2" data-max="2">
-                <img src="7wonders-duel.jpg" alt="七大奇迹：对决">
-                <div class="game-name"><input type="checkbox" name="桌游" value="七大奇迹：对决（7 Wonders Duel，含市政广场扩展）"> 七大奇迹对决</div>
-                <div class="game-info">2人 | 文明发展+三胜利路径</div>
-            </div>
+  sec.innerHTML = `
+    <div class="cat-header">
+      <div class="cat-dot"></div>
+      <div class="cat-title">${cat.label}</div>
+      <div class="cat-count" id="count-${cat.id}">${cat.games.length}</div>
+      <div class="cat-line"></div>
+    </div>
+    <div class="game-grid" id="grid-${cat.id}">
+      <div class="empty-state" id="empty-${cat.id}">当前人数暂无适合的游戏</div>
+    </div>
+  `;
+  pageBody.appendChild(sec);
 
-            <!-- 6. 七大奇迹（7 Wonders） -->
-            <div class="game-card" data-min="2" data-max="7">
-                <img src="7wonders.jpg" alt="七大奇迹">
-                <div class="game-name"><input type="checkbox" name="桌游" value="七大奇迹（7 Wonders）"> 七大奇迹</div>
-                <div class="game-info">2-7人 | 文明发展+区域竞争</div>
-            </div>
+  const grid = sec.querySelector(`#grid-${cat.id}`);
 
-            <!-- 7. 血与刃的白蔷薇 -->
-            <div class="game-card" data-min="5" data-max="10">
-                <img src="white-rose.jpg" alt="血与刃的白蔷薇">
-                <div class="game-name"><input type="checkbox" name="桌游" value="血与刃的白蔷薇"> 血与刃的白蔷薇</div>
-                <div class="game-info">5-10人 | 隐藏身份+阵营推理</div>
-            </div>
+  cat.games.forEach(g => {
+    const card = document.createElement('label');
+    card.className = 'game-card';
+    card.dataset.min = g.min;
+    card.dataset.max = g.max;
+    card.dataset.cat = cat.id;
 
-            <!-- 8. 骗子酒吧（Liars's Bar） -->
-            <div class="game-card" data-min="3" data-max="8">
-                <img src="liars-bar.jpg" alt="骗子酒吧">
-                <div class="game-name"><input type="checkbox" name="桌游" value="骗子酒吧（Liars's Bar）"> 骗子酒吧</div>
-                <div class="game-info">3-8人 | 吹牛欺诈+轮次下注</div>
-            </div>
+    const tagsHtml = g.tags.map(t => `<span class="tag">${t}</span>`).join('');
 
-            <!-- 9. 诡镇奇谈：饥渴深渊（Arkham Horror: The RPG） -->
-            <div class="game-card" data-min="2" data-max="6">
-                <img src="arkham-rpg.jpg" alt="诡镇奇谈：饥渴深渊">
-                <div class="game-name"><input type="checkbox" name="桌游" value="诡镇奇谈：饥渴深渊（Arkham Horror: The RPG）"> 诡镇奇谈RPG</div>
-                <div class="game-info">2-6人 | 克苏鲁TRPG+角色扮演</div>
-            </div>
-
-            <!-- 10. 诡镇奇谈：卡牌版（Arkham Horror: The Card Game） -->
-            <div class="game-card" data-min="1" data-max="4">
-                <img src="arkham-lcg.jpg" alt="诡镇奇谈：卡牌版">
-                <div class="game-name"><input type="checkbox" name="桌游" value="诡镇奇谈：卡牌版（Arkham Horror: The Card Game）"> 诡镇奇谈卡牌版</div>
-                <div class="game-info">1-4人 | 克苏鲁合作卡牌</div>
-            </div>
-
-            <!-- 11. 炸弹猫咪（Bomb Kittens） -->
-            <div class="game-card" data-min="2" data-max="5">
-                <img src="bomb-kittens.jpg" alt="炸弹猫咪">
-                <div class="game-name"><input type="checkbox" name="桌游" value="炸弹猫咪（Bomb Kittens）"> 炸弹猫咪</div>
-                <div class="game-info">2-5人 | 欢乐手牌+风险规避</div>
-            </div>
-
-            <!-- 12. 翻苏丹（刺杀苏丹王，Sultans of Karaya） -->
-            <div class="game-card" data-min="5" data-max="15">
-                <img src="sultans.jpg" alt="翻苏丹">
-                <div class="game-name"><input type="checkbox" name="桌游" value="翻苏丹（刺杀苏丹王，Sultans of Karaya）"> 翻苏丹</div>
-                <div class="game-info">5-15人 | 阵营对抗+身份推理</div>
-            </div>
-
-            <!-- 13. 幽港迷城：纽扣&虫子（Gloomhaven: Buttons & Bugs） -->
-            <div class="game-card" data-min="1" data-max="2">
-                <img src="gloomhaven-buttons.jpg" alt="幽港迷城：纽扣&虫子">
-                <div class="game-name"><input type="checkbox" name="桌游" value="幽港迷城：纽扣&虫子（Gloomhaven: Buttons & Bugs）"> 幽港迷城纽扣虫子</div>
-                <div class="game-info">1-2人 | 微型战术+角色成长</div>
-            </div>
-
-            <!-- 14. 茂林源记：森林的权力之战（Root） -->
-            <div class="game-card" data-min="2" data-max="4">
-                <img src="root.jpg" alt="茂林源记">
-                <div class="game-name"><input type="checkbox" name="桌游" value="茂林源记：森林的权力之战（Root）"> 茂林源记</div>
-                <div class="game-info">2-4人 | 不对称对抗+区域控制</div>
-            </div>
-
-            <!-- 15. 幽港迷城：雄狮之颚（Gloomhaven: Jaws of the Lion） -->
-            <div class="game-card" data-min="1" data-max="4">
-                <img src="gloomhaven-jaws.jpg" alt="幽港迷城：雄狮之颚">
-                <div class="game-name"><input type="checkbox" name="桌游" value="幽港迷城：雄狮之颚（Gloomhaven: Jaws of the Lion）"> 幽港迷城雄狮之颚</div>
-                <div class="game-info">1-4人 | 战术战斗+剧情驱动</div>
-            </div>
-
-            <!-- 16. 王权骰铸 重掷版（Dice Throne） -->
-            <div class="game-card" data-min="2" data-max="10">
-                <img src="dice-throne.jpg" alt="王权骰铸 重掷版">
-                <div class="game-name"><input type="checkbox" name="桌游" value="王权骰铸 重掷版（Dice Throne）"> 王权骰铸</div>
-                <div class="game-info">2-10人 | 骰子对战+角色构筑</div>
-            </div>
-
-            <!-- 17. 拼布艺术：圣诞版（Patchwork Christmas Edition） -->
-            <div class="game-card" data-min="2" data-max="2">
-                <img src="patchwork-xmas.jpg" alt="拼布艺术：圣诞版">
-                <div class="game-name"><input type="checkbox" name="桌游" value="拼布艺术：圣诞版（Patchwork Christmas Edition）"> 拼布艺术圣诞版</div>
-                <div class="game-info">2人 | 拼布策略+时间规划</div>
-            </div>
-
-            <!-- 18. 驴桥（Donkey Bridge） -->
-            <div class="game-card" data-min="2" data-max="6">
-                <img src="donkey-bridge.jpg" alt="驴桥">
-                <div class="game-name"><input type="checkbox" name="桌游" value="驴桥（Donkey Bridge）"> 驴桥</div>
-                <div class="game-info">2-6人 | 手牌管理+点数博弈</div>
-            </div>
-
-            <!-- 19. 瘟疫危机：传承 第一季（Pandemic Legacy Season 1） -->
-            <div class="game-card" data-min="2" data-max="4">
-                <img src="pandemic-legacy.jpg" alt="瘟疫危机：传承 第一季">
-                <div class="game-name"><input type="checkbox" name="桌游" value="瘟疫危机：传承 第一季（Pandemic Legacy Season 1）"> 瘟疫危机传承</div>
-                <div class="game-info">2-4人 | 合作抗疫+传承机制</div>
-            </div>
-
-            <!-- 20. 柯尔特快车（Colt Express，大盒版） -->
-            <div class="game-card" data-min="2" data-max="8">
-                <img src="colt-express.jpg" alt="柯尔特快车（大盒版）">
-                <div class="game-name"><input type="checkbox" name="桌游" value="柯尔特快车（Colt Express，大盒版）"> 柯尔特快车</div>
-                <div class="game-info">2-8人 | 西部题材+火车抢劫</div>
-            </div>
-
-            <!-- 21. 热力追缉（Heat: Pedal to the Metal） -->
-            <div class="game-card" data-min="1" data-max="6">
-                <img src="heat.jpg" alt="热力追缉">
-                <div class="game-name"><input type="checkbox" name="桌游" value="热力追缉（Heat: Pedal to the Metal）"> 热力追缉</div>
-                <div class="game-info">1-6人 | 赛车题材+赛道竞速</div>
-            </div>
-
-            <!-- 22. 时空神探：巴黎1920（Kronologic） -->
-            <div class="game-card" data-min="1" data-max="4">
-                <img src="kronologic.jpg" alt="时空神探：巴黎1920">
-                <div class="game-name"><input type="checkbox" name="桌游" value="时空神探：巴黎1920（Kronologic）"> 时空神探</div>
-                <div class="game-info">1-4人 | 时间推理+案件还原</div>
-            </div>
-
-            <!-- 23. 阿瓦隆：亚瑟传说 -->
-            <div class="game-card" data-min="4" data-max="10">
-                <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-1e7kZ1k-t3.jpg" alt="阿瓦隆：亚瑟传说">
-                <div class="game-name"><input type="checkbox" name="桌游" value="阿瓦隆：亚瑟传说"> 阿瓦隆：亚瑟传说</div>
-                <div class="game-info">4-10人 | 亚瑟王题材+阵营对抗</div>
-            </div>
-
-            <!-- 24. UNO -->
-            <div class="game-card" data-min="2" data-max="10">
-                <img src="uno.jpg" alt="UNO">
-                <div class="game-name"><input type="checkbox" name="桌游" value="UNO"> UNO</div>
-                <div class="game-info">2-10人 | 颜色匹配+欢乐互动</div>
-            </div>
-
-            <!-- 25. 柏德之门：背叛（Betrayal at Baldur's Gate） -->
-            <div class="game-card" data-min="3" data-max="6">
-                <img src="betrayal-baldurs-gate.jpg" alt="柏德之门：背叛">
-                <div class="game-name"><input type="checkbox" name="桌游" value="柏德之门：背叛（Betrayal at Baldur's Gate）"> 柏德之门背叛</div>
-                <div class="game-info">3-6人 | 冒险探索+剧本变化</div>
-            </div>
-
-            <!-- 26. 勃根地城堡 豪华版（The Castles of Burgundy） -->
-            <div class="game-card" data-min="2" data-max="4">
-                <img src="castles-of-burgundy.jpg" alt="勃根地城堡 豪华版">
-                <div class="game-name"><input type="checkbox" name="桌游" value="勃根地城堡 豪华版（The Castles of Burgundy）"> 勃根地城堡</div>
-                <div class="game-info">2-4人 | 德式策略+资源规划</div>
-            </div>
-
-            <!-- 27. 狼人杀 -->
-            <div class="game-card" data-min="6" data-max="18">
-                <img src="https://img.nga.178.com/attachments/mon_202503/17/-b4jddQ8k60-7zddZ1n-t3.jpg" alt="狼人杀">
-                <div class="game-name"><input type="checkbox" name="桌游" value="狼人杀"> 狼人杀</div>
-                <div class="game-info">6-18人 | 身份推理+语言辩论</div>
-            </div>
-
-            <!-- 28. 孤胆谢尔曼 -->
-            <div class="game-card" data-min="1" data-max="1">
-                <img src="lone-sherman.jpg" alt="孤胆谢尔曼">
-                <div class="game-name"><input type="checkbox" name="桌游" value="孤胆谢尔曼"> 孤胆谢尔曼</div>
-                <div class="game-info">1人 | 单人战棋+二战题材</div>
-            </div>
-
-            <!-- 29. 抵抗！（单人版） -->
-            <div class="game-card" data-min="1" data-max="1">
-                <img src="resistance-solo.jpg" alt="抵抗！（单人版）">
-                <div class="game-name"><input type="checkbox" name="桌游" value="抵抗！（单人版）"> 抵抗！（单人版）</div>
-                <div class="game-info">1人 | 二战叙事+剧情选择</div>
-            </div>
-
-            <!-- 30. 不屈战场：诺曼底（Undaunted: Normandy） -->
-            <div class="game-card" data-min="2" data-max="2">
-                <img src="undaunted-normandy.jpg" alt="不屈战场：诺曼底">
-                <div class="game-name"><input type="checkbox" name="桌游" value="不屈战场：诺曼底（Undaunted: Normandy）"> 不屈战场诺曼底</div>
-                <div class="game-info">2人 | 二战战棋+卡牌驱动</div>
-            </div>
-
-            <!-- 31. 恶夜杀机（Terrorscape） -->
-            <div class="game-card" data-min="1" data-max="4">
-                <img src="terrorscape.jpg" alt="恶夜杀机">
-                <div class="game-name"><input type="checkbox" name="桌游" value="恶夜杀机（Terrorscape）"> 恶夜杀机</div>
-                <div class="game-info">1-4人 | 恐怖生存+不对称对抗</div>
-            </div>
-
-            <!-- 32. 卡卡颂 大盒版（Carcassonne Big Box） -->
-            <div class="game-card" data-min="2" data-max="5">
-                <img src="carcassonne-bigbox.jpg" alt="卡卡颂 大盒版">
-                <div class="game-name"><input type="checkbox" name="桌游" value="卡卡颂 大盒版（Carcassonne Big Box）"> 卡卡颂大盒版</div>
-                <div class="game-info">2-5人 | 区域控制+拼图放置</div>
-            </div>
-
-            <!-- 33. Flip 7 -->
-            <div class="game-card" data-min="3" data-max="18">
-                <img src="flip7.jpg" alt="Flip 7">
-                <div class="game-name"><input type="checkbox" name="桌游" value="Flip 7"> Flip 7</div>
-                <div class="game-info">3-18人 | 压分博弈+分数竞速</div>
-            </div>
-
-            <!-- 34. Tacta -->
-            <div class="game-card" data-min="2" data-max="8">
-                <img src="tacta.jpg" alt="Tacta">
-                <div class="game-name"><input type="checkbox" name="桌游" value="Tacta"> Tacta</div>
-                <div class="game-info">2-8人 | 抽象策略+板块拼接</div>
-            </div>
+    card.innerHTML = `
+      <div class="img-wrap">
+        <div class="shimmer" id="sh-${g.full.replace(/\s/g,'')}"></div>
+        <img id="img-${g.full.replace(/\s/g,'')}" src="" alt="${g.name}"
+             style="opacity:0;position:absolute;inset:0;"
+             onerror="this._err=true;showPh(this)">
+        <div class="img-placeholder" id="ph-${g.full.replace(/\s/g,'')}" style="display:none"></div>
+        <div class="check-badge">
+          <svg viewBox="0 0 12 10" fill="none"><polyline points="1,5 4.5,9 11,1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
+        <div class="player-badge">${g.min === g.max ? g.min + '人' : g.min + '–' + g.max + '人'}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${g.name}</div>
+        <div class="card-tags">${tagsHtml}</div>
+        <div class="card-desc">${g.desc}</div>
+      </div>
+      <input type="checkbox" name="桌游" value="${g.full}">
+    `;
 
-        <!-- 提交按钮 -->
-        <button type="submit" class="submit-btn">提交选择</button>
-    </form>
+    card.addEventListener('click', () => {
+      requestAnimationFrame(() => {
+        const cb = card.querySelector('input[type=checkbox]');
+        card.classList.toggle('selected', cb.checked);
+        updateCount();
+      });
+    });
 
-    <script>
-        // 人数筛选逻辑
-        const slider = document.getElementById('playerCount');
-        const valueDisplay = document.getElementById('playerValue');
-        const gameCards = document.querySelectorAll('.game-card');
+    grid.appendChild(card);
+    loadImg(g);
+  });
+});
 
-        // 初始化显示对应人数的桌游
-        function filterGamesByPlayerCount(count) {
-            gameCards.forEach(card => {
-                const min = parseInt(card.dataset.min);
-                const max = parseInt(card.dataset.max);
-                if (count >= min && count <= max) {
-                    card.classList.remove('hide');
-                } else {
-                    card.classList.add('hide');
-                }
-            });
-        }
+// 占位色
+const PH_COLORS = [
+  ['#1a1d2e','#2d3561'],['#1a3a2e','#0f5c3a'],['#3b1a1a','#8b2020'],
+  ['#1a2e3a','#0f4a6e'],['#2e1a3a','#5b2080'],['#3a2e1a','#6e4a0f'],
+];
+let phIdx = 0;
 
-        // 滑块事件监听
-        slider.addEventListener('input', function() {
-            const currentCount = parseInt(this.value);
-            valueDisplay.textContent = currentCount;
-            filterGamesByPlayerCount(currentCount);
-        });
+function loadImg(g) {
+  const key = g.full.replace(/\s/g,'');
+  const img = document.getElementById('img-' + key);
+  const sh  = document.getElementById('sh-' + key);
+  const ph  = document.getElementById('ph-' + key);
+  const [c1, c2] = PH_COLORS[phIdx++ % PH_COLORS.length];
+  ph.style.background = `linear-gradient(135deg,${c1},${c2})`;
+  ph.textContent = g.name.charAt(0);
 
-        // 页面加载时默认筛选2人桌游
-        window.addEventListener('load', () => {
-            filterGamesByPlayerCount(2);
-        });
-    </script>
+  if (!g.img) { if(sh)sh.remove(); ph.style.display='flex'; return; }
+  img.onload = () => {
+    if(sh)sh.remove();
+    img.style.cssText = 'opacity:1;width:100%;height:100%;object-fit:cover;display:block;';
+  };
+  img.onerror = () => { if(sh)sh.remove(); ph.style.display='flex'; };
+  img.src = g.img;
+}
+
+window.showPh = function(imgEl) {
+  const id = imgEl.id.replace('img-','ph-');
+  const ph = document.getElementById(id);
+  if(ph) ph.style.display = 'flex';
+};
+
+// ── 人数筛选 ──────────────────────────────────────────────
+const slider = document.getElementById('playerCount');
+const valDisplay = document.getElementById('playerValue');
+
+function filterGames(n) {
+  document.querySelectorAll('.game-card').forEach(card => {
+    const fits = n >= +card.dataset.min && n <= +card.dataset.max;
+    card.classList.toggle('hide', !fits);
+    if (!fits) {
+      const cb = card.querySelector('input[type=checkbox]');
+      if (cb.checked) { cb.checked = false; card.classList.remove('selected'); }
+    }
+  });
+  // 更新每个分类的可见数量
+  CATEGORIES.forEach(cat => {
+    const visible = document.querySelectorAll(`[data-cat="${cat.id}"]:not(.hide)`).length;
+    const countEl = document.getElementById('count-' + cat.id);
+    if (countEl) countEl.textContent = visible;
+    const emptyEl = document.getElementById('empty-' + cat.id);
+    if (emptyEl) emptyEl.classList.toggle('show', visible === 0);
+    // 隐藏整个分类区块如果没有游戏
+    const sec = document.querySelector(`[data-cat-id="${cat.id}"]`);
+    if (sec) sec.style.display = visible === 0 ? 'none' : '';
+  });
+  updateCount();
+}
+
+slider.addEventListener('input', function() {
+  const n = +this.value;
+  valDisplay.textContent = n + ' 人';
+  filterGames(n);
+});
+
+// ── 选中计数 ──────────────────────────────────────────────
+function updateCount() {
+  const n = document.querySelectorAll('.game-card input:checked').length;
+  document.getElementById('selCount').textContent = n;
+  document.getElementById('selCount2').textContent = n;
+}
+
+window.addEventListener('load', () => filterGames(4));
+</script>
 </body>
 </html>
