@@ -484,6 +484,35 @@ const CATEGORIES = [
   },
 ];
 
+// ── 占位色 & 图片加载 ────────────────────────────────────
+const PH_COLORS = [
+  ['#1a1d2e','#2d3561'],['#1a3a2e','#0f5c3a'],['#3b1a1a','#8b2020'],
+  ['#1a2e3a','#0f4a6e'],['#2e1a3a','#5b2080'],['#3a2e1a','#6e4a0f'],
+];
+let phIdx = 0;
+
+function showPh(imgEl) {
+  const ph = document.getElementById(imgEl.id.replace('img-', 'ph-'));
+  if (ph) ph.style.display = 'flex';
+}
+
+function loadImg(g) {
+  const key = g.full.replace(/\s/g, '');
+  const img = document.getElementById('img-' + key);
+  const sh  = document.getElementById('sh-'  + key);
+  const ph  = document.getElementById('ph-'  + key);
+  const [c1, c2] = PH_COLORS[phIdx++ % PH_COLORS.length];
+  ph.style.background = `linear-gradient(135deg,${c1},${c2})`;
+  ph.textContent = g.name.charAt(0);
+  if (!g.img) { if (sh) sh.remove(); ph.style.display = 'flex'; return; }
+  img.onload = () => {
+    if (sh) sh.remove();
+    img.style.cssText = 'opacity:1;width:100%;height:100%;object-fit:cover;display:block;';
+  };
+  img.onerror = () => { if (sh) sh.remove(); ph.style.display = 'flex'; };
+  img.src = g.img;
+}
+
 // ── 渲染 ──────────────────────────────────────────────────
 const pageBody = document.getElementById('pageBody');
 
@@ -548,37 +577,6 @@ CATEGORIES.forEach(cat => {
     loadImg(g);
   });
 });
-
-// 占位色
-const PH_COLORS = [
-  ['#1a1d2e','#2d3561'],['#1a3a2e','#0f5c3a'],['#3b1a1a','#8b2020'],
-  ['#1a2e3a','#0f4a6e'],['#2e1a3a','#5b2080'],['#3a2e1a','#6e4a0f'],
-];
-let phIdx = 0;
-
-function loadImg(g) {
-  const key = g.full.replace(/\s/g,'');
-  const img = document.getElementById('img-' + key);
-  const sh  = document.getElementById('sh-' + key);
-  const ph  = document.getElementById('ph-' + key);
-  const [c1, c2] = PH_COLORS[phIdx++ % PH_COLORS.length];
-  ph.style.background = `linear-gradient(135deg,${c1},${c2})`;
-  ph.textContent = g.name.charAt(0);
-
-  if (!g.img) { if(sh)sh.remove(); ph.style.display='flex'; return; }
-  img.onload = () => {
-    if(sh)sh.remove();
-    img.style.cssText = 'opacity:1;width:100%;height:100%;object-fit:cover;display:block;';
-  };
-  img.onerror = () => { if(sh)sh.remove(); ph.style.display='flex'; };
-  img.src = g.img;
-}
-
-window.showPh = function(imgEl) {
-  const id = imgEl.id.replace('img-','ph-');
-  const ph = document.getElementById(id);
-  if(ph) ph.style.display = 'flex';
-};
 
 // ── 人数筛选 ──────────────────────────────────────────────
 const slider = document.getElementById('playerCount');
